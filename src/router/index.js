@@ -6,6 +6,9 @@ import LoginView from '../views/LoginView.vue'
 import SiswaDashboard from '../views/siswa/SiswaViews.vue'
 import KategoriPengaduan from '../views/kategoripengaduan/KategoriPengaduan.vue'
 
+//users
+import ProfileUser from '../views/users/ProfileViews.vue'
+
 //permission
 import NProgress from 'nprogress';
 
@@ -15,6 +18,8 @@ const routes = [
   { path: '/login', name: 'login', components: { default: LoginView }, meta: { layout: 'login' } },
   //siswa
   { path: '/siswa', name: 'siswadashboard', components: { default: SiswaDashboard }, meta: { requiresAuth: true } },
+  //user 
+  { path: '/profile-user', name: 'profileuser', components: { default: ProfileUser }, meta: { requiresAuth: true } },
   //kategori pengaduan
   { path: '/kategori-pengaduan', name: 'kategoripengaduan', components: { default: KategoriPengaduan }, meta: { requiresAuth: true } },
 ]

@@ -4,10 +4,10 @@
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-    <a href="index.html" class="logo d-flex align-items-center">
+    <router-link to="/" class="logo d-flex align-items-center">
         <img src="../../../public/assets/img/callit.png" alt="">
         <span class="d-none d-lg-block">| geng</span>
-    </a>
+    </router-link>
     <i @click="toggleSidebar" class="bi bi-list toggle-sidebar-btn"></i>
     </div>
     <!-- End Logo -->
@@ -186,10 +186,10 @@
             </li>
 
             <li>
-            <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+             <router-link to="/profile-user" class="dropdown-item d-flex align-items-center">
                 <i class="bi bi-person"></i>
                 <span>My Profile</span>
-            </a>
+            </router-link>
             </li>
             <li>
             <hr class="dropdown-divider">
