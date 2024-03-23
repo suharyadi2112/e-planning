@@ -1,0 +1,57 @@
+import { createRouter, createWebHistory } from 'vue-router'
+import HomeView from '../views/HomeView.vue'
+import TestingView from '../views/TestingView.vue'
+import LoginView from '../views/LoginView.vue'
+//reference data
+import SiswaDashboard from '../views/siswa/SiswaViews.vue'
+import KategoriPengaduan from '../views/kategoripengaduan/KategoriPengaduan.vue'
+
+//permission
+import NProgress from 'nprogress';
+
+const routes = [
+  { path: '/', name: '/', components: { default: HomeView }, meta: { requiresAuth: true } },
+  { path: '/testing', name: 'testing', components: { default: TestingView }, meta: { requiresAuth: true } },
+  { path: '/login', name: 'login', components: { default: LoginView }, meta: { layout: 'login' } },
+  //siswa
+  { path: '/siswa', name: 'siswadashboard', components: { default: SiswaDashboard }, meta: { requiresAuth: true } },
+  //kategori pengaduan
+  { path: '/kategori-pengaduan', name: 'kategoripengaduan', components: { default: KategoriPengaduan }, meta: { requiresAuth: true } },
+]
+
+
+const router = createRouter({
+  history: createWebHistory(process.env.BASE_URL),
+  routes
+})
+
+
+router.beforeEach((to, from, next) => {
+  // Cek apakah rute memerlukan autentikasi dan pengguna belum login
+  if (to.matched.some(record => record.meta.requiresAuth) && !isLoggedIn()) {
+    // Jika belum login, arahkan ke halaman login
+    next({ name: 'login' });
+  } else {
+    next();
+  }
+});
+
+// cek apakah pengguna sudah login
+function isLoggedIn() {
+  const token = localStorage.getItem('tokenCallIT');
+  return token !== null && token !== undefined;
+}
+
+router.beforeResolve((to, from, next) => {
+  if (to.name) {
+      NProgress.start()
+  }
+  next()
+})
+
+router.afterEach(() => {
+  NProgress.done()
+})
+
+
+export default router
