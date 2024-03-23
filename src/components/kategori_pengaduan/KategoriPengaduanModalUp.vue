@@ -26,7 +26,7 @@
                 <div class="input-group has-validation">
                   <div class="form-floating is-invalid">
                     <form class="form-floating">
-                        <input type="text" :class="{ 'form-control': true,'is-invalid': error.nama }"  id="nama" placeholder="Bug Aplikasi" v-model="formData.nama" name="nama">
+                        <input type="text" :class="{ 'form-control': true,'is-invalid': error.nama }" placeholder="Bug Aplikasi" v-model="formData.nama" name="nama">
                         <label for="nama">Nama Kategori Pengaduan</label>
                     </form>
                   </div>

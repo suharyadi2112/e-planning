@@ -9,18 +9,18 @@
               <div class="row">
                 <div class="col-sm-9">
                   <div class="pagetitle"> 
-                    <h1 class="text-left">Kategori Pengaduan</h1>
+                    <h1 class="text-left">Users</h1>
                     <nav>
                       <ol class="breadcrumb breadJa">
                         <router-link :to="{ name: '/'}" class="breadcrumb-item">Home</router-link>
-                        <router-link :to="{ name: 'kategoripengaduan'}" class="breadcrumb-item">Kategori Pengaduan</router-link>
+                        <router-link :to="{ name: 'users'}" class="breadcrumb-item">Users</router-link>
                       </ol>
                     </nav>
                   </div>
                 </div> 
                 <div class="col-3">
-                  <button type="button" class="btn btn-info btn-sm shadow AddKategoriPengaduan" data-bs-toggle="modal" data-bs-target="#modalKategoriPengaduan"><i class="bi bi-plus-circle"></i> add kategori pengaduan</button>
-                  <KatPengModalAdd @katpengAdd="refreshData" > </KatPengModalAdd>
+                  <button type="button" class="btn btn-info btn-sm shadow AddUsersss" data-bs-toggle="modal" data-bs-target="#modalKategoriPengaduan"><i class="bi bi-plus-circle"></i> add users</button>
+                  <UsersAdd @katpengAdd="refreshData" > </UsersAdd>
                 </div>
               </div>
               <!-- table -->
@@ -40,7 +40,7 @@
                   <div class="col-6 GridSearchBox">
                     <form class="row p-0" @submit.prevent="searchData">
                       <div class="input-group mb-3 Search ms-auto searchBox">
-                        <input type="text" v-model="searchQuery" class="form-control shadow-sm" placeholder="Nama Kategori" aria-label="search" aria-describedby="button-addon2">
+                        <input type="text" v-model="searchQuery" class="form-control shadow-sm" placeholder="nama / email" aria-label="search" aria-describedby="button-addon2">
                         <button class="btn btn-outline-primary shadow-sm searchBoxText" type="submit" id="button-addon2"><i class="bi bi-search"></i> search</button>
                       </div>
                     </form>
@@ -48,11 +48,17 @@
                 </div>
                 <div class="table-responsive">
                   <table class="table table-hover table-bordered shadow-sm caption-top table-sm">
-                    <caption class="pb-2 pt-0">List of kategori pengaduan</caption>
+                    <caption class="pb-2 pt-0">List of users</caption>
                     <thead class="table-primary">
                       <tr style="vertical-align:middle; text-align: center;">
                         <th scope="col" style="text-align: center;">#</th>
-                        <th scope="col">Nama Kategori</th>
+                        <th scope="col">Nama</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Handphone</th>
+                        <th scope="col">Jabatan</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Divisi</th>
+                        <th scope="col">Role</th>
                         <th scope="col">Action</th>
                       </tr>
                     </thead>
@@ -67,8 +73,14 @@
                       </tr>
                       <tr v-else v-for="item in items" :key="item.id" style="vertical-align:middle;">
                         <th scope="row"  width="5%;" style="text-align: center;">{{ item.number }}</th>
-                        <td nowrap=""  width="60%;" style="text-align: center;" >{{ item.nama }}</td>
-                        <td nowrap="" width="35%;" style="text-align: center;">
+                        <td nowrap="" style="text-align: center;" >{{ item.name }}</td>
+                        <td nowrap="" style="text-align: center;" >{{ item.email }}</td>
+                        <td nowrap="" style="text-align: center;" >{{ formattedPhoneNumber(item.handphone) }}</td>
+                        <td nowrap="" style="text-align: center;" >{{ item.jabatan }}</td>
+                        <td nowrap="" style="text-align: center;" >{{ item.status }}</td>
+                        <td nowrap="" style="text-align: center;" >{{ item.divisi }}</td>
+                        <td nowrap="" style="text-align: center;" >{{ item.role }}</td>
+                        <td nowrap="" width="10%;" style="text-align: center;">
                             
                             <button @click="openUpdateKatPeng(item.id)" class="btn btn-primary btn-sm m-1 shadow" data-bs-toggle="modal" data-bs-target="#updateKatpeng" :disabled="OpenUpdateKatPengBtn" title="Update">
                               <i class="bi bi-pencil"></i>
@@ -130,10 +142,10 @@
   }
   /* ponsel */
   @media screen and (max-width: 767px) { 
-    .AddKategoriPengaduan {
+    .AddUsersss {
       font-size: 0; 
     }
-    .AddKategoriPengaduan i {
+    .AddUsersss i {
       font-size: 1rem; 
     }
     .searchBoxText i {
@@ -148,7 +160,7 @@
   }
   /* dekstop */
   @media screen and (min-width: 768px) {
-    .AddKategoriPengaduan{
+    .AddUsersss{
       float: right;
     }
     .searchBox{
@@ -159,13 +171,13 @@
 </style>
 
 <script>
-import KatPengModalAdd from '@/components/kategori_pengaduan/KategoriPengaduanModalAdd.vue';
+import UsersAdd from '@/components/kategori_pengaduan/KategoriPengaduanModalAdd.vue';
 import katPengModalUp from '@/components/kategori_pengaduan/KategoriPengaduanModalUp.vue';
 import axios from 'axios';
 
 export default {
   components:{
-    KatPengModalAdd,
+    UsersAdd,
     katPengModalUp,
   },
   data() {
@@ -206,13 +218,13 @@ export default {
     totalItems(){
       return this.totalItemsData
     },
+
   },
   methods: {
     async fetchData() {
       try {
         this.loading = true; //loading fetch
-        // await new Promise(resolve => setTimeout(resolve, 1000));
-        const response = await axios(`${this.baseUrl}/api/get_kategori_pengaduan/`, {
+        const response = await axios(`${this.baseUrl}/api/get_user/`, {
           headers: {
             Authorization: `Bearer ${this.token}`
           },
@@ -238,8 +250,6 @@ export default {
 
         this.items = datas.data.data;
         this.totalPages = Math.ceil(datas.data.total / this.selectedEntries);
-
-        console.log(this.items)
 
         // info entries
         this.startEntryData = datas.data.from 
@@ -352,6 +362,15 @@ export default {
       });
     },
     
+    formattedPhoneNumber(noHp) {
+        if (this.items && noHp) {
+            let cleanedPhoneNumber = noHp.startsWith('0') ? noHp.substring(1) : noHp;
+            return '+62 ' + cleanedPhoneNumber;
+        } else {
+            return 'tidak ada data';
+        }
+    },
+
     Toasttt(msg, type, detail){
       const Toast = this.$swal.mixin({
           toast: true,

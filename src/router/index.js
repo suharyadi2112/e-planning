@@ -8,6 +8,7 @@ import KategoriPengaduan from '../views/kategoripengaduan/KategoriPengaduan.vue'
 
 //users
 import ProfileUser from '../views/users/ProfileViews.vue'
+import UsersDashboard from '../views/users/UsersViews.vue'
 
 //permission
 import NProgress from 'nprogress';
@@ -20,6 +21,7 @@ const routes = [
   { path: '/siswa', name: 'siswadashboard', components: { default: SiswaDashboard }, meta: { requiresAuth: true } },
   //user 
   { path: '/profile-user', name: 'profileuser', components: { default: ProfileUser }, meta: { requiresAuth: true } },
+  { path: '/users', name: 'users', components: { default: UsersDashboard }, meta: { requiresAuth: true } },
   //kategori pengaduan
   { path: '/kategori-pengaduan', name: 'kategoripengaduan', components: { default: KategoriPengaduan }, meta: { requiresAuth: true } },
 ]
