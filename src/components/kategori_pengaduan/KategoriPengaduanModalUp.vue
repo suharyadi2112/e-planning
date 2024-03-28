@@ -35,6 +35,26 @@
                   </div>
                 </div>
               </div>
+
+
+              <div class="col-md-12 mb-0">
+                  <div class="input-group mb-3 has-validation">
+                      <span class="input-group-text bg-success text-white"><i class="bi bi-card-image"></i></span>
+                      <div class="form-floating is-invalid">
+                          <input type="file" :class="{ 'form-control': true,'is-invalid': error.gambar }" id="gambar" name="gambar" @change="onFileChange"
+                          accept=".jpg, .jpeg, .png, .gif, .svg" 
+                          >
+                          <label for="gambar">Masukan gambar</label>
+                      </div>
+
+                      <div class="invalid-feedback">
+                          <span v-if="error.gambar">Gambar harus diisi.</span>
+                      </div>
+
+                  </div>
+              </div>
+
+
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> <i class="bi bi-x-circle"></i></button>
@@ -107,11 +127,22 @@
           this.sendUpdateKategoriPengaduan();
         }
       },
+
+      onFileChange(event) {
+        const file = event.target.files[0];
+        if (file) {
+          this.formData.gambar = file;
+          this.error.gambar = false;
+        } else {
+          this.error.gambar = true;
+        }
+      },
+
       async sendUpdateKategoriPengaduan() {
         try {
-            const response = await axios.put(`${this.baseUrl}/api/update_kategori_pengaduan/${this.formData.id}`, this.formData, {
+            const response = await axios.post(`${this.baseUrl}/api/update_kategori_pengaduan/${this.formData.id}`, this.formData, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${this.token}`,
                 },
             });
