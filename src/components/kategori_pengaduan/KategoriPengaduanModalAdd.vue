@@ -29,6 +29,24 @@
                   </div>
                 </div>
               </div>
+
+               <div class="col-md-12 mb-0">
+                  <div class="input-group mb-3 has-validation">
+                      <span class="input-group-text bg-success text-white"><i class="bi bi-card-image"></i></span>
+                      <div class="form-floating is-invalid">
+                          <input type="file" :class="{ 'form-control': true,'is-invalid': error.gambar }" id="gambar" name="gambar" @change="onFileChange"
+                          accept=".jpg, .jpeg, .png, .gif, .svg" 
+                          >
+                          <label for="gambar">Masukan gambar</label>
+                      </div>
+
+                      <div class="invalid-feedback">
+                          <span v-if="error.gambar">Gambar harus diisi.</span>
+                      </div>
+
+                  </div>
+              </div>
+
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> <i class="bi bi-x-circle"></i></button>
@@ -63,6 +81,7 @@
         token: localStorage.getItem('tokenCallIT'),
         formData: {
           nama:'',
+          gambar: null,
         },
         error : {},//error clientside
         loadingSubmitKatPeng : false, //progres btn
@@ -74,7 +93,7 @@
         this.loadingSubmitKatPeng = true //progres btn
         this.error = {};
         //validation
-        const requiredFields = ['nama'];
+        const requiredFields = ['nama', 'gambar'];
         requiredFields.forEach(field => { 
           
           console.log(this.formData[field])
@@ -90,11 +109,22 @@
           this.sendStoreKategoriPengaduan();
         }
       },
+
+      onFileChange(event) {
+        const file = event.target.files[0];
+        if (file) {
+          this.formData.gambar = file;
+          this.error.gambar = false;
+        } else {
+          this.error.gambar = true;
+        }
+      },
+
       async sendStoreKategoriPengaduan() {
         try {
             const response = await axios.post(`${this.baseUrl}/api/store_kategori_pengaduan`, this.formData, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${this.token}`,
                 },
             });

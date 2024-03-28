@@ -52,6 +52,7 @@
                     <thead class="table-primary">
                       <tr style="vertical-align:middle; text-align: center;">
                         <th scope="col" style="text-align: center;">#</th>
+                        <th scope="col">Gambar</th>
                         <th scope="col">Nama Kategori</th>
                         <th scope="col">Action</th>
                       </tr>
@@ -67,6 +68,9 @@
                       </tr>
                       <tr v-else v-for="item in items" :key="item.id" style="vertical-align:middle;">
                         <th scope="row"  width="5%;" style="text-align: center;">{{ item.number }}</th>
+                        <td nowrap="" width="10px" style="text-align: center;" >
+                          <img :src="`${baseUrl}/storage/${item.gambar}`" alt=""  width="50" height="50">
+                        </td>
                         <td nowrap=""  width="60%;" style="text-align: center;" >{{ item.nama }}</td>
                         <td nowrap="" width="35%;" style="text-align: center;">
                             

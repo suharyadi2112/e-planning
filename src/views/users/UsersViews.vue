@@ -19,8 +19,8 @@
                   </div>
                 </div> 
                 <div class="col-3">
-                  <button type="button" class="btn btn-info btn-sm shadow AddUsersss" data-bs-toggle="modal" data-bs-target="#modalKategoriPengaduan"><i class="bi bi-plus-circle"></i> add users</button>
-                  <UsersAdd @katpengAdd="refreshData" > </UsersAdd>
+                  <button type="button" class="btn btn-info btn-sm shadow AddUsersss" data-bs-toggle="modal" data-bs-target="#modalAddUsers"><i class="bi bi-plus-circle"></i> add users</button>
+                  <UsersAdd @userAdd="refreshData" > </UsersAdd>
                 </div>
               </div>
               <!-- table -->
@@ -171,7 +171,7 @@
 </style>
 
 <script>
-import UsersAdd from '@/components/kategori_pengaduan/KategoriPengaduanModalAdd.vue';
+import UsersAdd from '@/components/users/UsersModalAdd.vue';
 import katPengModalUp from '@/components/kategori_pengaduan/KategoriPengaduanModalUp.vue';
 import axios from 'axios';
 

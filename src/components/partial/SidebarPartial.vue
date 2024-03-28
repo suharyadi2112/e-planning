@@ -6,8 +6,13 @@
 
     <li class="nav-item">
         <router-link to="/" class="nav-link collapsed">
-        <i class="bi bi-grid"></i>
-        <span>Dashboard</span>
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </router-link>
+
+        <router-link to="/pengaduan" class="nav-link collapsed">
+          <i class="bi bi-megaphone"></i>
+          <span>Pengaduan</span>
         </router-link>
     </li><!-- End Dashboard Nav -->
 
@@ -15,6 +20,7 @@
         <a class="nav-link collapsed" data-bs-target="#ReferenceData" data-bs-toggle="collapse" href="#">
         <i class="bi bi-database-fill-gear"></i><span>Reference Data</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
+
         <ul id="ReferenceData" class="nav-content collapse " data-bs-parent="#sidebar-nav">
             <li>
                 <router-link to="/kategori-pengaduan" class="nav-link collapsed" :class="{ active: isActive('/kategori-pengaduan') }">
