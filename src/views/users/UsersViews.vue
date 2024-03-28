@@ -82,11 +82,11 @@
                         <td nowrap="" style="text-align: center;" >{{ item.role }}</td>
                         <td nowrap="" width="10%;" style="text-align: center;">
                             
-                            <button @click="openUpdateKatPeng(item.id)" class="btn btn-primary btn-sm m-1 shadow" data-bs-toggle="modal" data-bs-target="#updateKatpeng" :disabled="OpenUpdateKatPengBtn" title="Update">
+                            <button @click="openUpdateUsers(item.id)" class="btn btn-primary btn-sm m-1 shadow" data-bs-toggle="modal" data-bs-target="#updateKatpeng" :disabled="OpenUpdateUsersBtn" title="Update">
                               <i class="bi bi-pencil"></i>
                             </button>
 
-                            <button @click="DeleteKatPeng(item.id)" class="btn btn-outline-danger btn-sm m-1 shadow" :disabled="DeleteKatPengBtn" title="Delete">
+                            <button @click="DelUsers(item.id)" class="btn btn-outline-danger btn-sm m-1 shadow" :disabled="DeleteUsers" title="Delete">
                               <i class="bi bi-trash"></i>
                             </button>
                         </td>
@@ -196,13 +196,13 @@ export default {
       endEntryData: 0,
       totalItemsData : 0, 
 
-      OpenUpdateKatPengBtn : false,
+      OpenUpdateUsersBtn : false,
       FetchUpdateData : false,
 
       FormDataUpdate : {}, //data for update
       LoadKatpeng: true,
 
-      DeleteKatPengBtn : false,
+      DeleteUsers : false,
     }
   },
   mounted() {
@@ -295,12 +295,12 @@ export default {
       this.fetchData();
     },
     // ------------------update section---------------------
-    async openUpdateKatPeng(id){
-      this.OpenUpdateKatPengBtn = true
+    async openUpdateUsers(id){
+      this.OpenUpdateUsersBtn = true
       this.FetchUpdateData = false
       this.LoadKatpeng = false
       try {
-          const response = await axios.get(`${this.baseUrl}/api/get_kategori_pengaduan/${id}`,{
+          const response = await axios.get(`${this.baseUrl}/api/get_user/${id}`,{
               headers: {
                   'Authorization': `Bearer ${this.token}`,
               },
@@ -313,11 +313,11 @@ export default {
       } catch (error) {
         this.Toasttt("Server Error", "error", "")
       } finally { 
-        this.OpenUpdateKatPengBtn = false
+        this.OpenUpdateUsersBtn = false
       }
     },
 
-    DeleteKatPeng(id){
+    DelUsers(id){
       this.$swal({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -329,14 +329,14 @@ export default {
         confirmButtonText: "Yes, delete it!",
         preConfirm: async () => {
           try {
-              this.DeleteKatPengBtn = true
-              const response = await axios.delete(`${this.baseUrl}/api/del_kategori_pengaduan/${id}`,  {
+              this.DeleteUsers = true
+              const response = await axios.delete(`${this.baseUrl}/api/del_user/${id}`,  {
                 headers: {
                   'Authorization': `Bearer ${this.token}`,
                 },
               });
               
-              this.DeleteKatPengBtn = false
+              this.DeleteUsers = false
               return response
 
             } catch (error) {
