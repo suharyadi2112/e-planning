@@ -82,7 +82,7 @@
                         <td nowrap="" style="text-align: center;" >{{ item.role }}</td>
                         <td nowrap="" width="10%;" style="text-align: center;">
                             
-                            <button @click="openUpdateUsers(item.id)" class="btn btn-primary btn-sm m-1 shadow" data-bs-toggle="modal" data-bs-target="#updateKatpeng" :disabled="OpenUpdateUsersBtn" title="Update">
+                            <button @click="openUpdateUsers(item.id)" class="btn btn-primary btn-sm m-1 shadow" data-bs-toggle="modal" data-bs-target="#modalUpUsers" :disabled="OpenUpdateUsersBtn" title="Update">
                               <i class="bi bi-pencil"></i>
                             </button>
 
@@ -97,7 +97,7 @@
                     </tbody>
                   </table>
                 </div>
-                <katPengModalUp @katpengUpdate="refreshData" :dataFormUpdateKatpeng="FormDataUpdate" :dataLoadedKatpeng="LoadKatpeng"> </katPengModalUp>
+                <katPengModalUp @usersUpdate="refreshData" :dataFormUpdateUser="FormDataUpdate" :dataLoadedUsers="LoadUsers"> </katPengModalUp>
                 <!-- table -->
                 <div class="row">
                   <div class="col-9">
@@ -172,7 +172,7 @@
 
 <script>
 import UsersAdd from '@/components/users/UsersModalAdd.vue';
-import katPengModalUp from '@/components/kategori_pengaduan/KategoriPengaduanModalUp.vue';
+import katPengModalUp from '@/components/users/UsersModalUp.vue';
 import axios from 'axios';
 
 export default {
@@ -200,7 +200,7 @@ export default {
       FetchUpdateData : false,
 
       FormDataUpdate : {}, //data for update
-      LoadKatpeng: true,
+      LoadUsers: true,
 
       DeleteUsers : false,
     }
@@ -298,7 +298,7 @@ export default {
     async openUpdateUsers(id){
       this.OpenUpdateUsersBtn = true
       this.FetchUpdateData = false
-      this.LoadKatpeng = false
+      this.LoadUsers = false
       try {
           const response = await axios.get(`${this.baseUrl}/api/get_user/${id}`,{
               headers: {
@@ -306,8 +306,7 @@ export default {
               },
           });
           this.FormDataUpdate = response.data.data
-          this.LoadKatpeng = true
-          console.log(this.FormDataUpdate,"tes")
+          this.LoadUsers = true
           return response
           
       } catch (error) {
