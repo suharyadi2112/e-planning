@@ -85,6 +85,10 @@
                             <button @click="openUpdateUsers(item.id)" class="btn btn-primary btn-sm m-1 shadow" data-bs-toggle="modal" data-bs-target="#modalUpUsers" :disabled="OpenUpdateUsersBtn" title="Update">
                               <i class="bi bi-pencil"></i>
                             </button>
+                            
+                            <button @click="ResetPassword(item.id)" class="btn btn-warning btn-sm m-1 shadow" title="Reset Password" :disabled="ResetPass">
+                              <i class="bi bi-arrow-repeat"></i>
+                            </button>
 
                             <button @click="DelUsers(item.id)" class="btn btn-outline-danger btn-sm m-1 shadow" :disabled="DeleteUsers" title="Delete">
                               <i class="bi bi-trash"></i>
@@ -203,6 +207,7 @@ export default {
       LoadUsers: true,
 
       DeleteUsers : false,
+      ResetPass : false,
     }
   },
   mounted() {
@@ -360,7 +365,54 @@ export default {
         }
       });
     },
-    
+
+    ResetPassword(id){
+      this.$swal({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        confirmButtonColor: "#CBA005",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Reset Password!",
+        preConfirm: async () => {
+          try {
+              this.ResetPass = true
+             
+              const response = await axios.put(`${this.baseUrl}/api/reset_password/${id}`,null, {
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${this.token}`,
+                  },
+              });
+              
+              this.ResetPass = false
+              return response
+
+            } catch (error) {
+              if (error.response && error.response.status == 400) {
+                this.$swal.showValidationMessage(`
+                  Request failed: ${error.response.data.message}
+                `);
+              }
+              console.error(error,"check error");
+            }
+        },
+        allowOutsideClick: () => !this.$swal.isLoading()
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$swal.fire({
+            title: "Success!",
+            text: "Success Reset Password",
+            icon: "success",
+          }).then(() => {
+            this.refreshData()
+          })
+        }
+      });
+    },
+
     formattedPhoneNumber(noHp) {
         if (this.items && noHp) {
             let cleanedPhoneNumber = noHp.startsWith('0') ? noHp.substring(1) : noHp;
