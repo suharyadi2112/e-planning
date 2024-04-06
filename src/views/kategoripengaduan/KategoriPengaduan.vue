@@ -40,7 +40,7 @@
                   <div class="col-6 GridSearchBox">
                     <form class="row p-0" @submit.prevent="searchData">
                       <div class="input-group mb-3 Search ms-auto searchBox">
-                        <input type="text" v-model="searchQuery" class="form-control shadow-sm" placeholder="Nama Kategori" aria-label="search" aria-describedby="button-addon2">
+                        <input type="text" v-model="searchQuery" class="form-control shadow-sm" placeholder="nama kategori" aria-label="search" aria-describedby="button-addon2">
                         <button class="btn btn-outline-primary shadow-sm searchBoxText" type="submit" id="button-addon2"><i class="bi bi-search"></i> search</button>
                       </div>
                     </form>
