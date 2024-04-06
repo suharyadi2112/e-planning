@@ -10,6 +10,9 @@ import KategoriPengaduan from '../views/kategoripengaduan/KategoriPengaduan.vue'
 import ProfileUser from '../views/users/ProfileViews.vue'
 import UsersDashboard from '../views/users/UsersViews.vue'
 
+//pengaduan
+import PengaduanDashboard from '../views/pengaduan/PengaduanView.vue'
+
 //permission
 import NProgress from 'nprogress';
 
@@ -24,6 +27,8 @@ const routes = [
   { path: '/users', name: 'users', components: { default: UsersDashboard }, meta: { requiresAuth: true } },
   //kategori pengaduan
   { path: '/kategori-pengaduan', name: 'kategoripengaduan', components: { default: KategoriPengaduan }, meta: { requiresAuth: true } },
+  //pengaduan
+  { path: '/pengaduan', name: 'pengaduandashboard', components: { default: PengaduanDashboard }, meta: { requiresAuth: true } },
 ]
 
 
