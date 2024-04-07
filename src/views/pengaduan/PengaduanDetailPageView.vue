@@ -57,11 +57,20 @@
             <div class="card-body pt-3">
               <!-- Bordered Tabs -->
               <ul class="nav nav-tabs nav-tabs-bordered" role="tablist">
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview" aria-selected="true" role="tab">Overview</button>
+                <li class="nav-item" role="pengaduanTab">
+                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview" aria-selected="true" role="tab"><i class="bi bi-eye"></i> Overview</button>
                 </li>
-                <li class="nav-item" role="assignto">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#assign-to-overview" aria-selected="true" role="tab">Assign To</button>
+
+                <li class="nav-item" role="pengaduanTab">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#assign-to-overview" aria-selected="true" role="tab"><i class="bi bi-people-fill"></i> Assign To</button>
+                </li>
+
+                <li class="nav-item" role="pengaduanTab">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#picture-pre" aria-selected="true" role="tab"><i class="bi bi-images"></i> Picture Pre</button>
+                </li>
+
+                <li class="nav-item" role="pengaduanTab">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#picture-post" aria-selected="true" role="tab"><i class="bi bi-image-alt"></i> Picture Post</button>
                 </li>
               </ul>
             
@@ -73,7 +82,7 @@
                 </template>
                 <template v-else>
             
-                    <div class="tab-pane fade profile-overview active show" id="profile-overview" role="tabpanel">
+                    <div class="tab-pane fade-in profile-overview active" id="profile-overview" role="tabpanel">
                         <h5 class="card-title">Pengaduan Details</h5>
 
                         <div class="row">
@@ -122,7 +131,9 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane fade assign-to-overview show" id="assign-to-overview" role="tabpanel">
+                
+
+                    <div class="tab-pane fade-in assign-to-overview" id="assign-to-overview" role="tabpanel">
                         <h3 class="card-title">Workers on this job <span>| {{ items.workers.length }} Orang</span></h3>
                         <table class="table table-hover shadow-sm">
                             <thead>
@@ -140,8 +151,28 @@
                                     <td>{{ itemWorker.handphone }}</td>
                                     <td>{{ itemWorker.jabatan }}</td>
                                 </tr>
+                                <tr v-if="items.workers.length === 0">
+                                    <td colspan="4" class="text-center"><i class="bi bi-emoji-tear"></i> This report has not been assigned to any workers yet.</td>
+                                </tr>
                             </tbody>
                         </table>
+                    </div>
+                    
+                    <div class="tab-pane fade-in picture-pre" id="picture-pre" role="tabpanel">
+
+                        <h5 class="card-title">Pengaduan Details</h5>
+                        <div class="gallery">
+                            <div class="gallery-item" v-for="itemDetailPengaduan in items.detailpengaduan" :key="itemDetailPengaduan.id" >
+                                <img :src="`${baseUrl}/storage/${itemDetailPengaduan.picture}`" alt="Photo pengaduan pre">
+                                <div class="overlay">
+                                    <div class="overlay-content">
+                                        <a @click="PopUpPictures(itemDetailPengaduan.picture, items.lokasi, items.lantai)" class="text-white" style="cursor: zoom-in;">Popup this picture</a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Add more gallery items as needed -->
+                        </div>
                     </div>
 
                 </template>
@@ -156,31 +187,6 @@
     </section>
 </main>
 </template>
-
-<style scope>
-    .fade-in {
-        animation: fadeIn 0.2s ease-in;
-    }
-    .fade-out {
-        animation: fadeOut 0.2s ease-out;
-    }
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-    @keyframes fadeOut {
-        from {
-            opacity: 1;
-        }
-        to {
-            opacity: 0;
-        }
-    }
-</style>
 
 <script>
 import axios from 'axios';
@@ -229,6 +235,18 @@ export default {
                 this.loading = false;  
             }
         },
+
+        PopUpPictures(urlPictures, lokasi, lantai) {
+            this.$swal({
+                title: "Picture-Pre Pengaduan",
+                text: `Location Photo ${lokasi} - ${lantai} `,
+                imageUrl: `${this.baseUrl}/storage/${urlPictures}`,
+                // imageWidth: 400,
+                // imageHeight: 200,
+                imageAlt: "Picture Pre"
+            });
+        }
+
     },
     
     computed: {
@@ -244,3 +262,69 @@ export default {
 
 }
 </script>
+
+
+<style scope>
+    .fade-in {
+        animation: fadeIn 0.2s ease-in;
+    }
+    .fade-out {
+        animation: fadeOut 0.2s ease-out;
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
+    }
+    /*picture pre*/
+    .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover; /* Menyesuaikan gambar ke area yang tersedia tanpa merubah aspek rasio */
+            aspect-ratio: 1 / 1; /* Menetapkan rasio aspek gambar menjadi 1:1 */
+        }
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .gallery-item:hover .overlay {
+            opacity: 1;
+        }
+        .overlay-content {
+            text-align: center;
+        }
+</style>
