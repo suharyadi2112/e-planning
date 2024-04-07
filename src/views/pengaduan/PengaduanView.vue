@@ -70,7 +70,7 @@
                           </div>
                         </td>
                       </tr>
-                      <tr v-else v-for="item in items" :key="item.id" style="vertical-align:middle;">
+                      <tr v-else v-for="item in items" :key="item.id" style="vertical-align:middle;" class="fade-in">
                         <th scope="row"  width="5%;" style="text-align: center;">{{ item.number }}</th>
                         <td nowrap="" width="10px;" style="text-align: center;">
                             <router-link :to="'/detail-page-pengaduan/' + item.id">{{ item.kode_laporan }}</router-link>
@@ -152,43 +152,6 @@
   </main><!-- End #main -->
 
 </template> 
-<style scope>
-  .breadJa{
-    margin-top: 10px;
-  }
-  hr {
-      margin-top: 2px;
-      margin-bottom: 2px;
-  }
-  /* ponsel */
-  @media screen and (max-width: 767px) { 
-    .AddPengaduan {
-      font-size: 0; 
-    }
-    .AddPengaduan i {
-      font-size: 1rem; 
-    }
-    .searchBoxText i {
-      font-size: 1rem;
-    }
-    .searchBoxText {
-      font-size: 0;
-    }
-    .GridSearchBox {
-      padding-top: 8px;
-    }
-  }
-  /* dekstop */
-  @media screen and (min-width: 768px) {
-    .AddPengaduan{
-      float: right;
-    }
-    .searchBox{
-      width: 50%;
-    }
-  }
-  
-</style>
 
 <script>
 import KatPengModalAdd from '@/components/kategori_pengaduan/KategoriPengaduanModalAdd.vue';
@@ -472,3 +435,65 @@ export default {
   },
 }
 </script>
+
+
+<style scope>
+  .breadJa{
+    margin-top: 10px;
+  }
+  hr {
+      margin-top: 2px;
+      margin-bottom: 2px;
+  }
+  /* ponsel */
+  @media screen and (max-width: 767px) { 
+    .AddPengaduan {
+      font-size: 0; 
+    }
+    .AddPengaduan i {
+      font-size: 1rem; 
+    }
+    .searchBoxText i {
+      font-size: 1rem;
+    }
+    .searchBoxText {
+      font-size: 0;
+    }
+    .GridSearchBox {
+      padding-top: 8px;
+    }
+  }
+  /* dekstop */
+  @media screen and (min-width: 768px) {
+    .AddPengaduan{
+      float: right;
+    }
+    .searchBox{
+      width: 50%;
+    }
+  }
+
+  /*fade*/
+  .fade-in {
+        animation: fadeIn 0.1s ease-in;
+  }
+  .fade-out {
+      animation: fadeOut 0.1s ease-out;
+  }
+  @keyframes fadeIn {
+      from {
+          opacity: 0;
+      }
+      to {
+          opacity: 1;
+      }
+  }
+  @keyframes fadeOut {
+      from {
+          opacity: 1;
+      }
+      to {
+          opacity: 0;
+      }
+  }  
+</style>
