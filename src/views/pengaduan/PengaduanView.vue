@@ -72,7 +72,9 @@
                       </tr>
                       <tr v-else v-for="item in items" :key="item.id" style="vertical-align:middle;">
                         <th scope="row"  width="5%;" style="text-align: center;">{{ item.number }}</th>
-                        <td nowrap=""  width="10px;" style="text-align: center;" >{{ item.kode_laporan }}</td>
+                        <td nowrap="" width="10px;" style="text-align: center;">
+                            <router-link :to="'/detail-page-pengaduan/' + item.id">{{ item.kode_laporan }}</router-link>
+                        </td>
                         <td nowrap=""  width="10px;" style="text-align: center;" >{{ item.pelapor.name }}</td>
                       
                         <td style="text-align: justify; width:20%;" @click="toggleExpandName(item.id)">

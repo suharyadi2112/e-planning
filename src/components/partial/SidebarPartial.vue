@@ -5,7 +5,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
     <li class="nav-item">
-        <router-link to="/" class="nav-link collapsed">
+        <router-link to="/" class="nav-link collapsed" :class="{ active: isActive('/') }">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </router-link>
@@ -14,9 +14,7 @@
           <i class="bi bi-megaphone"></i>
           <span>Pengaduan</span>
         </router-link>
-    </li><!-- End Dashboard Nav -->
 
-    <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#ReferenceData" data-bs-toggle="collapse" href="#">
         <i class="bi bi-database-fill-gear"></i><span>Reference Data</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
