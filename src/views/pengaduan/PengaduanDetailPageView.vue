@@ -120,14 +120,28 @@
                             <div class="col-lg-3 col-md-4 label">Tanggal Selesai</div>
                             <div class="col-lg-9 col-md-8">{{ items.tanggal_selesai ? items.tanggal_selesai : '-' }}</div>
                         </div>
-
                     </div>
 
-
-                    <div class="tab-pane fade assign-to-overview active show" id="assign-to-overview" role="tabpanel">
-
-                        tes
-
+                    <div class="tab-pane fade assign-to-overview show" id="assign-to-overview" role="tabpanel">
+                        <h3 class="card-title">Workers on this job <span>| {{ items.workers.length }} Orang</span></h3>
+                        <table class="table table-hover shadow-sm">
+                            <thead>
+                                <tr class="table-primary">
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Handphone</th>
+                                    <th scope="col">Jabatan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="itemWorker in items.workers" :key="itemWorker.id" >
+                                    <td>{{ itemWorker.name }}</td>
+                                    <td>{{ itemWorker.email }}</td>
+                                    <td>{{ itemWorker.handphone }}</td>
+                                    <td>{{ itemWorker.jabatan }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
 
                 </template>
