@@ -19,8 +19,9 @@
                   </div>
                 </div> 
                 <div class="col-3">
-                  <button type="button" class="btn btn-info btn-sm shadow AddPengaduan" data-bs-toggle="modal" data-bs-target="#modalPengaduan"><i class="bi bi-plus-circle"></i> add pengaduan</button>
-                  <KatPengModalAdd @katpengAdd="refreshData" > </KatPengModalAdd>
+                    <router-link to="/add-pengaduan" class="btn btn-info btn-sm shadow AddPengaduan" role="button">
+                        <i class="bi bi-plus-circle"></i> add pengaduan
+                    </router-link>
                 </div>
               </div>
               <!-- table -->
@@ -117,7 +118,6 @@
                     </tbody>
                   </table>
                 </div>
-                <katPengModalUp @katpengUpdate="refreshData" :dataFormUpdateKatpeng="FormDataUpdate" :dataLoadedKatpeng="LoadKatpeng"> </katPengModalUp>
                 <!-- table -->
                 <div class="row">
                   <div class="col-9">
@@ -154,14 +154,10 @@
 </template> 
 
 <script>
-import KatPengModalAdd from '@/components/kategori_pengaduan/KategoriPengaduanModalAdd.vue';
-import katPengModalUp from '@/components/kategori_pengaduan/KategoriPengaduanModalUp.vue';
 import axios from 'axios';
 
 export default {
   components:{
-    KatPengModalAdd,
-    katPengModalUp,
   },
   data() {
     return {

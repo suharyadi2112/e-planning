@@ -38,12 +38,23 @@
                     <br>
                     <div class="alert" 
                         :class="{
-                            'alert-danger': items.prioritas === 'Tinggi',
-                            'alert-warning': items.prioritas === 'Sedang',
-                            'alert-primary': items.prioritas !== 'Tinggi' && items.prioritas !== 'Sedang'
+                            'alert-danger': items.prioritas.toLowerCase() === 'tinggi',
+                            'alert-warning': items.prioritas.toLowerCase() === 'sedang',
+                            'alert-primary': items.prioritas.toLowerCase() !== 'tinggi' && items.prioritas.toLowerCase() !== 'sedang'
                         }" 
                         role="alert">
                         Prioritas : <b>{{ items.prioritas.toUpperCase() }}</b>
+                    </div>
+
+                    <div class="alert" 
+                        :class="{
+                            'alert-warning': items.status_pelaporan.toLowerCase() === 'progress',
+                            'alert-success': items.status_pelaporan.toLowerCase() === 'done',
+                            'alert-secondary': items.status_pelaporan.toLowerCase() === 'waiting',
+                            'alert-primary': items.status_pelaporan.toLowerCase() !== 'progress' && items.status_pelaporan.toLowerCase() !== 'done' && items.status_pelaporan.toLowerCase() !== 'waiting'
+                        }" 
+                        role="alert">
+                        Status Pelaporan : <b>{{ items.status_pelaporan.toUpperCase() }}</b>
                     </div>
                 </div>
             </template>
@@ -92,6 +103,33 @@
                         </div>
 
                         <div class="row">
+                            <div class="col-lg-3 col-md-4 label">Judul Pengaduan</div>
+                            <div class="col-lg-9 col-md-8" style="text-align: justify;">{{ items.judul_pengaduan ? items.judul_pengaduan : '-' }}</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">Deskripsi Pengaduan</div>
+                            <div class="col-lg-9 col-md-8" style="text-align: justify;">{{ items.dekskripsi_pelaporan ? items.dekskripsi_pelaporan : '-' }}</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">Prioritas</div>
+                            <div class="col-lg-9 col-md-8">
+                                <span style="width:90px;" :class="{
+                                    'badge bg-danger': items.prioritas && items.prioritas.toLowerCase() === 'tinggi',
+                                    'badge bg-warning': items.prioritas && items.prioritas.toLowerCase() === 'sedang',
+                                    'badge bg-primary': !items.prioritas || (items.prioritas.toLowerCase() !== 'tinggi' && items.prioritas.toLowerCase() !== 'sedang')
+                                }">{{ items.prioritas ? items.prioritas.toUpperCase() : '-' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">Status Pelaporan</div>
+                            <div class="col-lg-9 col-md-8"><span style="width:90px;" :class="{'badge bg-secondary': items.status_pelaporan.toLowerCase() === 'waiting', 'badge bg-warning': items.status_pelaporan.toLowerCase() === 'progress', 'badge bg-success': items.status_pelaporan.toLowerCase() !== 'waiting' && items.status_pelaporan.toLowerCase() !== 'progress'}">{{ items.status_pelaporan.toUpperCase() }}</span></div>
+                        </div>
+                        
+                        <div class="row">
                             <div class="col-lg-3 col-md-4 label">Lokasi</div>
                             <div class="col-lg-9 col-md-8">{{ items.lokasi ? items.lokasi.toUpperCase() : '-' }}</div>
                         </div>
@@ -100,25 +138,11 @@
                             <div class="col-lg-3 col-md-4 label">Lantai</div>
                             <div class="col-lg-9 col-md-8">{{ items.lantai ? items.lantai.toUpperCase() : '-' }}</div>
                         </div>
-
-                        <div class="row">
-                            <div class="col-lg-3 col-md-4 label">Judul Pengaduan</div>
-                            <div class="col-lg-9 col-md-8" style="text-align: justify;">{{ items.judul_pengaduan ? items.judul_pengaduan : '-' }}</div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-3 col-md-4 label">Prioritas</div>
-                            <div class="col-lg-9 col-md-8">{{ items.prioritas ? items.prioritas.toUpperCase() : '-' }}</div>
-                        </div>
+                        
 
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label">No.Telp</div>
                             <div class="col-lg-9 col-md-8">{{ formattedPhoneNumber }}</div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-3 col-md-4 label">Status Pelaporan</div>
-                            <div class="col-lg-9 col-md-8"><span style="width:70px;" :class="{'badge bg-secondary': items.status_pelaporan.toLowerCase() === 'waiting', 'badge bg-warning': items.status_pelaporan.toLowerCase() === 'progress', 'badge bg-success': items.status_pelaporan.toLowerCase() !== 'waiting' && items.status_pelaporan.toLowerCase() !== 'progress'}">{{ items.status_pelaporan.toLowerCase() }}</span></div>
                         </div>
 
                         <div class="row">

@@ -13,6 +13,7 @@ import UsersDashboard from '../views/users/UsersViews.vue'
 //pengaduan
 import PengaduanDashboard from '../views/pengaduan/PengaduanView.vue'
 import DetailPagePengaduan from '../views/pengaduan/PengaduanDetailPageView.vue'
+import AddPengaduan from '../views/pengaduan/AddPengaduanView.vue'
 
 //permission
 import NProgress from 'nprogress';
@@ -31,6 +32,7 @@ const routes = [
   //pengaduan
   { path: '/pengaduan', name: 'pengaduandashboard', components: { default: PengaduanDashboard }, meta: { requiresAuth: true } },
   { path: '/detail-page-pengaduan/:id', name: 'detailpagepengaduan', components: { default: DetailPagePengaduan }, meta: { requiresAuth: true } },
+  { path: '/add-pengaduan', name: 'addpengaduan', components: { default: AddPengaduan }, meta: { requiresAuth: true } },
 ]
 
 
