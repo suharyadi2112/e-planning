@@ -81,7 +81,8 @@
                     </div>
                 </template>
                 <template v-else>
-            
+
+                    <!-- OVERVIEW DETAIL PENGADUAN -->
                     <div class="tab-pane fade-in profile-overview active" id="profile-overview" role="tabpanel">
                         <h5 class="card-title">Pengaduan Details</h5>
 
@@ -131,8 +132,7 @@
                         </div>
                     </div>
 
-                
-
+                    <!-- WORKER ASSIGN -->
                     <div class="tab-pane fade-in assign-to-overview" id="assign-to-overview" role="tabpanel">
                         <h3 class="card-title">Workers on this job <span>| {{ items.workers.length }} Orang</span></h3>
                         <table class="table table-hover shadow-sm">
@@ -158,20 +158,45 @@
                         </table>
                     </div>
                     
+                    <!-- PICTURE PRE -->
                     <div class="tab-pane fade-in picture-pre" id="picture-pre" role="tabpanel">
 
-                        <h5 class="card-title">Pengaduan Details</h5>
-                        <div class="gallery">
+                        <h3 class="card-title">Picture Pre <span>| {{ items.detailpengaduan.filter(item => item.tipe === 'pre').length }} picture</span></h3>
+                        <div v-if="items.detailpengaduan.filter(item => item.tipe === 'pre').length > 0" class="gallery">
                             <div class="gallery-item" v-for="itemDetailPengaduan in items.detailpengaduan" :key="itemDetailPengaduan.id" >
-                                <img :src="`${baseUrl}/storage/${itemDetailPengaduan.picture}`" alt="Photo pengaduan pre">
+                                <!-- hanya picture pre yang ditampikan -->
+                                <img v-if="itemDetailPengaduan.tipe === 'pre'" :src="`${baseUrl}/storage/${itemDetailPengaduan.picture}`" alt="Photo pengaduan pre">
                                 <div class="overlay">
                                     <div class="overlay-content">
-                                        <a @click="PopUpPictures(itemDetailPengaduan.picture, items.lokasi, items.lantai)" class="text-white" style="cursor: zoom-in;">Popup this picture</a>
+                                        <a @click="PopUpPictures(itemDetailPengaduan.picture, items.lokasi, items.lantai, itemDetailPengaduan.tipe)" class="text-white" style="cursor: zoom-in;">Popup this picture</a>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- Add more gallery items as needed -->
+                        </div>
+                        <div v-else class="alert alert-info" role="alert" style="text-align:center;">
+                           <i class="bi bi-emoji-dizzy"></i> No photos picture pre!
+                        </div>
+
+                    </div>
+
+                    <!-- PICTURE POST -->
+                    <div class="tab-pane fade-in picture-post" id="picture-post" role="tabpanel">
+
+                        <h3 class="card-title">Picture Post <span>| {{ items.detailpengaduan.filter(item => item.tipe === 'post').length }} picture</span></h3>
+                        <div v-if="items.detailpengaduan.filter(item => item.tipe === 'post').length > 0" class="gallery">
+                            <div class="gallery-item" v-for="itemDetailPengaduan in items.detailpengaduan" :key="itemDetailPengaduan.id" >
+                                <!-- hanya picture pre yang ditampikan -->
+                                <img v-if="itemDetailPengaduan.tipe === 'post'" :src="`${baseUrl}/storage/${itemDetailPengaduan.picture}`" alt="Photo pengaduan post">
+                                <div class="overlay">
+                                    <div class="overlay-content">
+                                        <a @click="PopUpPictures(itemDetailPengaduan.picture, items.lokasi, items.lantai, itemDetailPengaduan.tipe)" class="text-white" style="cursor: zoom-in;">Popup this picture</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div v-else class="alert alert-info" role="alert" style="text-align:center;">
+                           <i class="bi bi-emoji-dizzy"></i> No photos picture post!
                         </div>
                     </div>
 
@@ -236,14 +261,14 @@ export default {
             }
         },
 
-        PopUpPictures(urlPictures, lokasi, lantai) {
+        PopUpPictures(urlPictures, lokasi, lantai, tipe) {
             this.$swal({
-                title: "Picture-Pre Pengaduan",
+                title: `Picture-${tipe} Pengaduan`,
                 text: `Location Photo ${lokasi} - ${lantai} `,
                 imageUrl: `${this.baseUrl}/storage/${urlPictures}`,
                 // imageWidth: 400,
                 // imageHeight: 200,
-                imageAlt: "Picture Pre"
+                imageAlt: `Picture ${tipe}`
             });
         }
 
