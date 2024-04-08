@@ -22,8 +22,21 @@
               </div>
 
             <!-- content -->
-                <form class="row g-3"  @submit.prevent="submitFormPengaduan">
-                    
+            <div v-if="!hasLoaded">
+                <div class="d-flex justify-content-center text-primary m-3">
+                    <strong role="status" class="pt-1" style="padding-right: 2rem;">Retrieving Data...</strong>
+                    <div class="spinner-border shadow" aria-hidden="true"></div>
+                </div>
+            </div>
+            
+            <form v-else class="row g-3 fade-in-add-pengaduan-view"  @submit.prevent="submitFormPengaduan">
+                
+                <div class="col-12" v-if="errorMessages.length > 0">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <li v-for="(errorMessage, index) in errorMessages" :key="index"><i class="bi bi-exclamation-circle"></i> {{ errorMessage }}</li>
+                    </div>
+                </div>
+
                     <div class="col-md-3">
                         <div class="input-group mb-3 has-validation">
                         <span class="input-group-text bg-primary text-white"><i class="bi bi-list-ol"></i></span>
@@ -47,7 +60,7 @@
                         <div class="input-group mb-3 has-validation">
                         <span class="input-group-text bg-primary text-white"><i class="bi bi-telephone"></i></span>
                         <div class="form-floating is-invalid">
-                            <input type="text" :class="{ 'form-control': true,'is-invalid': error.nomor_handphone }"  id="nomor_handphone" placeholder="-" v-model="formData.nomor_handphone" name="nomor_handphone">
+                            <input type="number" :class="{ 'form-control': true,'is-invalid': error.nomor_handphone }"  id="nomor_handphone" placeholder="-" v-model="formData.nomor_handphone" name="nomor_handphone">
                             <label for="nomor_handphone">Nomor Handphone</label>
                             </div>
 
@@ -159,7 +172,7 @@
                             </div>
                         </div>
                     </div>
-
+                    <hr>
                     <div class="col-md-12">
                         <router-link :to="{ name: 'pengaduandashboard' }" class="btn btn-secondary">
                             <i class="bi bi-arrow-return-left"></i> Back
@@ -172,10 +185,8 @@
                             </span>
                         </button>
                     </div>
+            </form><!-- End floating Labels Form -->
 
-                </form><!-- End floating Labels Form -->
-
-            <!-- content -->
             </div>
           </div>
         </div>
@@ -207,6 +218,7 @@ export default {
         },
         picture_pre_preview: null, //untuk preview
 
+        hasLoaded : false, //loaded content
         error : {},//error clientside
         errorMessages: {}, //error serverside
         loadingSubmitPengaduan: false,
@@ -216,9 +228,25 @@ export default {
     }
   },
   mounted() {
-    this.fetchKategoriPengaduan();
+    this.fetchBoth();
   },
   methods: {
+
+    async fetchBoth() {
+      try {
+            // Menjalankan kedua metode fetch async secara paralel
+            await Promise.all([
+                this.fetchKategoriPengaduan(),
+            ]);
+
+            this.hasLoaded = true;
+            
+        } catch (error) {
+            alert("server error")
+            console.error('Error:', error);
+        }
+    },
+
     async fetchKategoriPengaduan() {
         try {
             this.loading = true; 
@@ -346,44 +374,13 @@ export default {
   .breadJa{
     margin-top: 10px;
   }
-  hr {
-      margin-top: 2px;
-      margin-bottom: 2px;
-  }
-  /* ponsel */
-  @media screen and (max-width: 767px) { 
-    .AddPengaduan {
-      font-size: 0; 
-    }
-    .AddPengaduan i {
-      font-size: 1rem; 
-    }
-    .searchBoxText i {
-      font-size: 1rem;
-    }
-    .searchBoxText {
-      font-size: 0;
-    }
-    .GridSearchBox {
-      padding-top: 8px;
-    }
-  }
-  /* dekstop */
-  @media screen and (min-width: 768px) {
-    .AddPengaduan{
-      float: right;
-    }
-    .searchBox{
-      width: 50%;
-    }
-  }
 
   /*fade*/
-  .fade-in {
-        animation: fadeIn 0.1s ease-in;
+  .fade-in-add-pengaduan-view {
+        animation: fadeIn 0.2s ease-in;
   }
-  .fade-out {
-      animation: fadeOut 0.1s ease-out;
+  .fade-out-add-pengaduan-view {
+      animation: fadeOut 0.2s ease-out;
   }
   @keyframes fadeIn {
       from {

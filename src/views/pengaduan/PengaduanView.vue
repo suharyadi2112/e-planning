@@ -13,7 +13,7 @@
                     <nav>
                       <ol class="breadcrumb breadJa">
                         <router-link :to="{ name: '/'}" class="breadcrumb-item">Home</router-link>
-                        <router-link :to="{ name: 'pengaduandashboard'}" class="breadcrumb-item">Pengaduan</router-link>
+                        <router-link :to="{ name: 'pengaduandashboard'}" class="breadcrumb-item">Dashboard Pengaduan</router-link>
                       </ol>
                     </nav>
                   </div>
@@ -71,7 +71,7 @@
                           </div>
                         </td>
                       </tr>
-                      <tr v-else v-for="item in items" :key="item.id" style="vertical-align:middle;" class="fade-in">
+                      <tr v-else v-for="item in items" :key="item.id" style="vertical-align:middle;" class="fade-in-pengaduan-view">
                         <th scope="row"  width="5%;" style="text-align: center;">{{ item.number }}</th>
                         <td nowrap="" width="10px;" style="text-align: center;">
                             <router-link :to="'/detail-page-pengaduan/' + item.id">{{ item.kode_laporan }}</router-link>
@@ -470,11 +470,11 @@ export default {
   }
 
   /*fade*/
-  .fade-in {
-        animation: fadeIn 0.1s ease-in;
+  .fade-in-pengaduan-view {
+        animation: fadeIn 0.2s ease-in;
   }
-  .fade-out {
-      animation: fadeOut 0.1s ease-out;
+  .fade-out-pengaduan-view {
+      animation: fadeOut 0.5s ease-out;
   }
   @keyframes fadeIn {
       from {
