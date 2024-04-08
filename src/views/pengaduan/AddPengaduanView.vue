@@ -41,7 +41,7 @@
                         <div class="input-group mb-3 has-validation">
                         <span class="input-group-text bg-primary text-white"><i class="bi bi-list-ol"></i></span>
                         <div class="form-floating is-invalid">
-                            <select :class="{ 'form-select': true, 'is-invalid': error.kategori_pengaduan_id }" v-model="formData.kategori_pengaduan_id" id="nama_kategori" aria-label="Floating label" name="nama_kategori">
+                            <select :class="{ 'form-select': true, 'is-invalid': error.kategori_pengaduan_id }"  v-model="formData.kategori_pengaduan_id" id="nama_kategori" aria-label="Floating label" name="nama_kategori">
                                 <option value="" selected disabled>Choose...</option>
                                 <option v-for="namaKategori in itemKategoriPengaduan" :key="namaKategori.id" :value="namaKategori.id">
                                 {{ namaKategori.nama }}
@@ -142,8 +142,6 @@
                             <small class="text-muted" style="font-size:12px; text-align: justify;">ex *Kendala Akses Internet, Keterbatasan Bandwidth, dan Kejadian Terputusnya Sambungan yang Menghambat Produktivitas Tim.</small>
                         </div>
                     </div>
-                    
-                    <hr>
 
                     <div class="col-md-6 mb-0">
                         <div class="input-group mb-3 ">
@@ -156,6 +154,25 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-md-6">
+                        <div class="input-group mb-3">
+                        <span class="input-group-text text-white bg-primary" id="basic-addon1"><i class="bi bi-person-check-fill"></i></span>
+                        
+                        <VueMultiselect
+                            v-model="selectedValuesWorkers"
+                            :multiple="true"
+                            :close-on-select="true"
+                            placeholder="Select your workers"
+                            :options="itemUserWorkers"
+                            label="name"
+                            track-by="id"
+                            class="form-control"
+                            style="cursor: pointer;"
+                            />
+                        </div>
+                    </div>
+
                     <div class="col-md-6">
                         <div class="d-grid gap-3">
                             <div class="alert alert-info" style="padding:6.2px;">
@@ -172,6 +189,7 @@
                             </div>
                         </div>
                     </div>
+                    
                     <hr>
                     <div class="col-md-12">
                         <router-link :to="{ name: 'pengaduandashboard' }" class="btn btn-secondary">
@@ -200,13 +218,17 @@
 <script>
 
 import axios from 'axios';
+import VueMultiselect from 'vue-multiselect'
 
 export default {
   components:{
+    VueMultiselect,
   },
   data() {
     return {
         itemKategoriPengaduan : {},
+        itemUserWorkers : {},
+        selectedValuesWorkers: [], //multi select workers
         formData: {
             kategori_pengaduan_id:'',
             lokasi : '',
@@ -215,6 +237,7 @@ export default {
             judul_pengaduan : '',
             dekskripsi_pelaporan: '',
             picture_pre: null,
+            selectedIdsWorkers: [] //multi select workers
         },
         picture_pre_preview: null, //untuk preview
 
@@ -225,6 +248,7 @@ export default {
         loading : false,
         baseUrl: process.env.BE_APP_BASE_URL,
         token: localStorage.getItem('tokenCallIT'),
+
     }
   },
   mounted() {
@@ -237,6 +261,7 @@ export default {
             // Menjalankan kedua metode fetch async secara paralel
             await Promise.all([
                 this.fetchKategoriPengaduan(),
+                this.fetchWorkers(),
             ]);
 
             this.hasLoaded = true;
@@ -259,6 +284,30 @@ export default {
             
             console.log(response.data.data,"cek data")
             this.itemKategoriPengaduan = response.data.data;
+
+        } catch (error) {
+            if (error.response && error.response.status == 401) {
+                this.Toasttt('Unauthorized. You do not have access.', 'warning');
+                this.$router.push('/login');
+            }
+            console.error("Terjadi kesalahan:", error);
+        } finally {
+            this.loading = false;  
+        }
+    },
+
+    async fetchWorkers() {
+        try {
+            this.loading = true; 
+            // await new Promise(resolve => setTimeout(resolve, 1000));
+            const response = await axios(`${this.baseUrl}/api/get_user_worker`, {
+                headers: {
+                    Authorization: `Bearer ${this.token}`
+                },
+            })
+            
+            console.log(response.data.data,"cek data users")
+            this.itemUserWorkers = response.data.data;
 
         } catch (error) {
             if (error.response && error.response.status == 401) {
@@ -301,11 +350,11 @@ export default {
     submitFormPengaduan() {
         this.loadingSubmitPengaduan = true //progres btn
         this.error = {};
+        this.formData.selectedIdsWorkers = this.selectedValuesWorkers.map(itemUserWorkers => itemUserWorkers.id); //assign selected worker to formData
+
         //validation
         const requiredFields = ['kategori_pengaduan_id', 'lokasi', 'lantai', 'judul_pengaduan', 'dekskripsi_pelaporan','nomor_handphone'];
         requiredFields.forEach(field => { 
-            
-            console.log(this.formData[field])
             if (!this.formData[field]) {
             this.error[field] = true;
             setTimeout(()=>{ this.loadingSubmitPengaduan = false },1000);
@@ -369,34 +418,46 @@ export default {
 }
 </script>
 
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
 
 <style scope>
-  .breadJa{
-    margin-top: 10px;
-  }
+    /* multiselect modif */
+    .multiselect__tags {
+        border: 0px;
+    }
+    .multiselect__placeholder {
+        color: #000000;
+        font-size: 16px;
+    }
+    .multiselect__select::before {
+        top: 80%;
+    }
+    .breadJa{
+        margin-top: 10px;
+    }
 
-  /*fade*/
-  .fade-in-add-pengaduan-view {
-        animation: fadeIn 0.2s ease-in;
-  }
-  .fade-out-add-pengaduan-view {
-      animation: fadeOut 0.2s ease-out;
-  }
-  @keyframes fadeIn {
-      from {
-          opacity: 0;
-      }
-      to {
-          opacity: 1;
-      }
-  }
-  @keyframes fadeOut {
-      from {
-          opacity: 1;
-      }
-      to {
-          opacity: 0;
-      }
-  }  
+    /*fade*/
+    .fade-in-add-pengaduan-view {
+            animation: fadeIn 0.2s ease-in;
+    }
+    .fade-out-add-pengaduan-view {
+        animation: fadeOut 0.2s ease-out;
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
+    }  
 
 </style>
