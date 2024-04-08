@@ -155,9 +155,9 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6">
-                        <div class="input-group mb-3">
-                        <span class="input-group-text text-white bg-primary" id="basic-addon1"><i class="bi bi-person-check-fill"></i></span>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                        <span class="input-group-text text-white bg-success" id="basic-addon1"><i class="bi bi-person-check-fill"></i></span>
                         
                         <VueMultiselect
                             v-model="selectedValuesWorkers"
@@ -170,6 +170,22 @@
                             class="form-control"
                             style="cursor: pointer;"
                             />
+                        </div>
+                        <small class="text-muted" style="font-size:12px; text-align: justify;"><i>#note menambah worker juga bisa dilakukan setelah pengaduan dibuat.</i></small>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <div class="input-group mb-3">
+                        <span class="input-group-text bg-success text-white"><i class="bi bi-exclamation-diamond-fill"></i></span>
+                            <div class="form-floating ">
+                                <select :class="{ 'form-select': true }" v-model="formData.prioritas" id="prioritas" aria-label="Floating label" name="prioritas">
+                                    <option value="" selected disabled>Choose...</option>
+                                    <option value="Tinggi" class="bg-danger text-white">Tinggi</option>
+                                    <option value="Sedang" class="bg-warning text-white">Sedang</option>
+                                    <option value="Rendah" class="bg-primary text-white">Rendah</option>
+                                </select>
+                                <label for="prioritas">Prioritas</label>
+                            </div>
                         </div>
                     </div>
 
@@ -237,7 +253,8 @@ export default {
             judul_pengaduan : '',
             dekskripsi_pelaporan: '',
             picture_pre: null,
-            selectedIdsWorkers: [] //multi select workers
+            user_id: [], //multi select workers 
+            prioritas: '',
         },
         picture_pre_preview: null, //untuk preview
 
@@ -245,7 +262,6 @@ export default {
         error : {},//error clientside
         errorMessages: {}, //error serverside
         loadingSubmitPengaduan: false,
-        loading : false,
         baseUrl: process.env.BE_APP_BASE_URL,
         token: localStorage.getItem('tokenCallIT'),
 
@@ -274,7 +290,6 @@ export default {
 
     async fetchKategoriPengaduan() {
         try {
-            this.loading = true; 
             // await new Promise(resolve => setTimeout(resolve, 1000));
             const response = await axios(`${this.baseUrl}/api/get_kategori_pengaduan_list`, {
                 headers: {
@@ -291,14 +306,11 @@ export default {
                 this.$router.push('/login');
             }
             console.error("Terjadi kesalahan:", error);
-        } finally {
-            this.loading = false;  
         }
     },
 
     async fetchWorkers() {
         try {
-            this.loading = true; 
             // await new Promise(resolve => setTimeout(resolve, 1000));
             const response = await axios(`${this.baseUrl}/api/get_user_worker`, {
                 headers: {
@@ -315,8 +327,6 @@ export default {
                 this.$router.push('/login');
             }
             console.error("Terjadi kesalahan:", error);
-        } finally {
-            this.loading = false;  
         }
     },
 
@@ -350,7 +360,7 @@ export default {
     submitFormPengaduan() {
         this.loadingSubmitPengaduan = true //progres btn
         this.error = {};
-        this.formData.selectedIdsWorkers = this.selectedValuesWorkers.map(itemUserWorkers => itemUserWorkers.id); //assign selected worker to formData
+        this.formData.user_id = this.selectedValuesWorkers.map(itemUserWorkers => itemUserWorkers.id); //assign selected worker to formData
 
         //validation
         const requiredFields = ['kategori_pengaduan_id', 'lokasi', 'lantai', 'judul_pengaduan', 'dekskripsi_pelaporan','nomor_handphone'];

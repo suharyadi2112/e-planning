@@ -158,7 +158,34 @@
 
                     <!-- WORKER ASSIGN -->
                     <div class="tab-pane fade-in assign-to-overview" id="assign-to-overview" role="tabpanel">
-                        <h3 class="card-title">Workers on this job <span>| {{ items.workers.length }} Orang</span></h3>
+                        <div class="col-12" v-if="errorMessages.length > 0">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <li v-for="(errorMessage, index) in errorMessages" :key="index"><i class="bi bi-exclamation-circle"></i> {{ errorMessage }}</li>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h3 class="card-title">Workers on this job <span>| {{ items.workers.length }} Orang</span></h3>
+                            </div> 
+                            <div class="col-6">
+                                <div class="input-group" style="margin-top:5px">
+                                    <span class="input-group-text text-white bg-success" id="basic-addon1"><i class="bi bi-person-check-fill"></i></span>
+                                    <VueMultiselect
+                                    v-model="selectedValuesWorkers"
+                                    placeholder="Select your workers"
+                                    :options="itemUserWorkers"
+                                    :resetAfter="true"
+                                    label="name"
+                                    track-by="id"
+                                    class="form-control"
+                                    style="cursor: pointer; padding:0px; "
+                                    @select="handleSubmitWorker"
+                                    />
+                                </div>
+                                <small class="text-muted" style="font-size:12px; text-align: justify;"><i>#note tambah workers bisa dilakukan disini.</i></small>
+                            </div>
+                          </div>
                         <table class="table table-hover shadow-sm">
                             <thead>
                                 <tr class="table-primary">
@@ -166,16 +193,30 @@
                                     <th scope="col">Email</th>
                                     <th scope="col">Handphone</th>
                                     <th scope="col">Jabatan</th>
+                                    <th scope="col" class="text-center"><i class="bi bi-person-fill-gear"></i></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="itemWorker in items.workers" :key="itemWorker.id" >
-                                    <td>{{ itemWorker.name }}</td>
-                                    <td>{{ itemWorker.email }}</td>
-                                    <td>{{ itemWorker.handphone }}</td>
-                                    <td>{{ itemWorker.jabatan }}</td>
+                                <tr v-if="loadingAddWorker">
+                                    <td colspan="10">
+                                        <div class="d-flex justify-content-center text-primary m-3">
+                                        <strong role="status" class="pt-1" style="padding-right: 2rem;">Loading...</strong>
+                                        <div class="spinner-border shadow" aria-hidden="true"></div>
+                                        </div>
+                                    </td>
                                 </tr>
-                                <tr v-if="items.workers.length === 0">
+                                <tr v-else v-for="itemWorker in items.workers" :key="itemWorker.id" class="fade-in-worker-single">
+                                    <td style="vertical-align:middle;">{{ itemWorker.name }}</td>
+                                    <td style="vertical-align:middle;">{{ itemWorker.email }}</td>
+                                    <td style="vertical-align:middle;">{{ itemWorker.handphone }}</td>
+                                    <td style="vertical-align:middle;">{{ itemWorker.jabatan }}</td>
+                                    <td class="text-center" style="vertical-align:middle;">
+                                        <button @click="DeleteWorkerSingle(itemWorker.id)" class="btn btn-outline-danger btn-sm m-1 shadow" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr v-if="!loadingAddWorker && items.workers.length === 0">
                                     <td colspan="4" class="text-center"><i class="bi bi-emoji-tear"></i> This report has not been assigned to any workers yet.</td>
                                 </tr>
                             </tbody>
@@ -241,29 +282,52 @@
 import axios from 'axios';
 import 'primevue/resources/themes/bootstrap4-light-blue/theme.css'
 import ProgressBar from 'primevue/progressbar';
+import VueMultiselect from 'vue-multiselect'
 
 export default {
     components: {
         ProgressBar,
+        VueMultiselect,
     },
     data() {
         return {
             items: {},
+            itemUserWorkers : {},
+            selectedValuesWorkers: '',
+            loadingAddWorker: false,
+            DelWorkerSingleBtn: false,
+            formData: {
+                user_id:[],
+            },
             baseUrl: process.env.BE_APP_BASE_URL,
             token: localStorage.getItem('tokenCallIT'),
             idPengaduan : null,
             ProfileOne : false,
+            errorMessages: {}, //error serverside
         }
     },
     mounted() {
         this.idPengaduan = this.$route.params.id;
-        this.fetchData();
+        this.fetchBoth();
     },
     methods: {
+        async fetchBoth() {
+            try {
+                // Menjalankan kedua metode fetch async secara paralel
+                await Promise.all([
+                    this.fetchData(),
+                    this.fetchWorkers(),
+                ]);
+
+                this.ProfileOne = true;
+                
+            } catch (error) {
+                alert("server error")
+                console.error('Error:', error);
+            }
+        },
         async fetchData() {
             try {
-                this.ProfileOne = false;
-                this.loading = true; 
                 // await new Promise(resolve => setTimeout(resolve, 1000));
                 const response = await axios(`${this.baseUrl}/api/get_pengaduan/${this.idPengaduan}`, {
                     headers: {
@@ -272,7 +336,7 @@ export default {
                 })
 
                 this.items = response.data.data;
-                this.ProfileOne = true;
+                this.loadingAddWorker = false
 
             } catch (error) {
                 if (error.response && error.response.status == 401) {
@@ -280,10 +344,93 @@ export default {
                     this.$router.push('/login');
                 }
                 console.error("Terjadi kesalahan:", error);
-            } finally {
-                this.loading = false;  
             }
         },
+
+        async fetchWorkers() {
+            try { 
+                // await new Promise(resolve => setTimeout(resolve, 1000));
+                const response = await axios(`${this.baseUrl}/api/get_user_worker`, {
+                    headers: {
+                        Authorization: `Bearer ${this.token}`
+                    },
+                })
+                
+                console.log(response.data.data,"cek data users")
+                this.itemUserWorkers = response.data.data;
+
+            } catch (error) {
+                if (error.response && error.response.status == 401) {
+                    this.Toasttt('Unauthorized. You do not have access.', 'warning');
+                    this.$router.push('/login');
+                }
+                console.error("Terjadi kesalahan:", error);
+            }
+        },
+
+        handleSubmitWorker() {
+            try {
+                this.formData.user_id.push(this.selectedValuesWorkers.id); // Set user_id menjadi array, kebutuhan payload
+                console.log("Pilihan dipilih:", this.formData.user_id);
+
+                this.addWorkerToPengaduanSingle(this.formData);
+                
+                this.formData.user_id = [];
+                this.errorMessages = [];
+            } catch (error) {
+                console.error('Error #i34:', error);
+            }
+        },
+
+        async addWorkerToPengaduanSingle(dataWorker) {
+            try {
+                this.loadingAddWorker = true;
+                const response = await axios.put(`${this.baseUrl}/api/assign_worker_to_pengaduan/${this.idPengaduan}`, dataWorker, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.token}`,
+                    },
+                });
+                
+                this.Toasttt('Successfully', 'success', 'Worker Successfully Assigned to Pengaduan')
+                this.fetchData();
+                return response;
+            } catch (error) {
+                if(error.response.data.message && error.response.status == 400){
+                    for (let field in error.response.data.message) { //list error 400
+                    this.errorMessages.push(...error.response.data.message[field]);
+                    }
+                }
+                console.log(error.response.data.message)
+                this.loadingAddWorker = false
+            }
+        },
+
+        async DeleteWorkerSingle(idWorker){
+            try {
+                this.DelWorkerSingleBtn = true
+                this.loadingAddWorker = true;
+                const response = await axios.delete(`${this.baseUrl}/api/del_worker_from_pengaduan/${this.idPengaduan}/${idWorker}`,  {
+                    headers: {
+                    'Authorization': `Bearer ${this.token}`,
+                    },
+                });
+
+                this.fetchData();
+                return response
+
+            } catch (error) {
+                if (error.response && error.response.status == 400) {
+                    this.$swal.showValidationMessage(`
+                        Request failed: ${error.response.data.message}
+                    `);
+                }
+                console.error(error,"check error");
+            }finally{
+                this.DelWorkerSingleBtn = false //un disable button del
+            }
+        },
+
 
         PopUpPictures(urlPictures, lokasi, lantai, tipe) {
             this.$swal({
@@ -294,7 +441,27 @@ export default {
                 // imageHeight: 200,
                 imageAlt: `Picture ${tipe}`
             });
-        }
+        },
+
+        Toasttt(msg, type, detail){
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#F8F8F8",
+                didOpen: (toast) => {
+                    toast.onmouseenter = this.$swal.stopTimer;
+                    toast.onmouseleave = this.$swal.resumeTimer;
+                }
+            });
+                Toast.fire({
+                icon: type,
+                title: msg,
+                text: detail,
+            });
+        },
 
     },
     
@@ -313,11 +480,13 @@ export default {
 </script>
 
 
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
+
 <style scope>
-    .fade-in {
+    .fade-in-worker-single {
         animation: fadeIn 0.2s ease-in;
     }
-    .fade-out {
+    .fade-out-worker-single {
         animation: fadeOut 0.2s ease-out;
     }
     @keyframes fadeIn {
