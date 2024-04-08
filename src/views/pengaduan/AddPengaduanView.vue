@@ -22,7 +22,7 @@
               </div>
 
             <!-- content -->
-                <form class="row g-3">
+                <form class="row g-3"  @submit.prevent="submitFormPengaduan">
                     
                     <div class="col-md-3">
                         <div class="input-group mb-3 has-validation">
@@ -102,20 +102,77 @@
 
                     <div class="col-md-6">
                         <div class="input-group mb-3 has-validation">
-                        <span class="input-group-text bg-primary text-white"><i class="bi bi-chat-square-text"></i></span>
+                        <span class="input-group-text bg-primary text-white" ><i class="bi bi-chat-square-text"></i></span>
                         <div class="form-floating is-invalid">
-                            <textarea type="text" :class="{ 'form-control': true,'is-invalid': error.judul_pengaduan }"  id="judul_pengaduan" placeholder="-" v-model="formData.judul_pengaduan" name="judul_pengaduan"></textarea>
+                            <textarea type="text" :class="{ 'form-control': true,'is-invalid': error.judul_pengaduan }"  id="judul_pengaduan" placeholder="-" v-model="formData.judul_pengaduan" name="judul_pengaduan" style="height: 100px;"></textarea>
                             <label for="judul_pengaduan">Judul Pengaduan</label>
                             </div>
 
                             <div class="invalid-feedback">
                                 <span v-if="error.judul_pengaduan"> Judul Pengaduan harus diisi.</span>
                             </div>
-                            <small class="text-muted" style="font-size:12px">ex *PC Patah</small>
+                            <small class="text-muted" style="font-size:12px; text-align: justify;">ex *Gangguan Koneksi WiFi di Lantai 3, Kecepatan Internet Lambat, serta Masalah Intermiten pada Telepon IP yang Mengganggu Komunikasi Internal dan Eksternal.</small>
                         </div>
                     </div>
 
-                 
+                    <div class="col-md-6">
+                        <div class="input-group mb-3 has-validation">
+                        <span class="input-group-text bg-primary text-white" ><i class="bi bi-chat-square-text"></i></span>
+                        <div class="form-floating is-invalid">
+                            <textarea type="text" :class="{ 'form-control': true,'is-invalid': error.dekskripsi_pelaporan }"  id="dekskripsi_pelaporan" placeholder="-" v-model="formData.dekskripsi_pelaporan" name="dekskripsi_pelaporan" style="height: 100px;"></textarea>
+                            <label for="dekskripsi_pelaporan">Deskripsi Pelaporan</label>
+                            </div>
+
+                            <div class="invalid-feedback">
+                                <span v-if="error.dekskripsi_pelaporan"> Deskripsi Pelaporan harus diisi.</span>
+                            </div>
+                            <small class="text-muted" style="font-size:12px; text-align: justify;">ex *Kendala Akses Internet, Keterbatasan Bandwidth, dan Kejadian Terputusnya Sambungan yang Menghambat Produktivitas Tim.</small>
+                        </div>
+                    </div>
+                    
+                    <hr>
+
+                    <div class="col-md-6 mb-0">
+                        <div class="input-group mb-3 ">
+                            <span class="input-group-text bg-success text-white"><i class="bi bi-card-image"></i></span>
+                            <div class="form-floating is-invalid">
+                                <input type="file" :class="{ 'form-control': true}" id="picture_pre" name="picture_pre" @change="onFileChange"
+                                accept=".jpg, .jpeg, .png, .gif, .svg" multiple 
+                                >
+                                <label for="picture_pre">Picture Pre</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-grid gap-3">
+                            <div class="alert alert-info" style="padding:6.2px;">
+                                <div v-if="formData.picture_pre && formData.picture_pre.length > 0">
+                                    <div class="row">
+                                        <div v-for="(image, index) in picture_pre_preview" :key="index" class="col-md-4 mb-3">
+                                            <img :src="image" alt="Uploaded Image" style="width:100%;" class="mb-2">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center" v-else>
+                                    <i class="bi bi-images"></i> Choose picture pre first
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <router-link :to="{ name: 'pengaduandashboard' }" class="btn btn-secondary">
+                            <i class="bi bi-arrow-return-left"></i> Back
+                        </router-link>
+                        <button class="btn btn-primary" style="float: right;" type="submit" :disabled="loadingSubmitPengaduan">
+                            <span v-if="!loadingSubmitPengaduan"><i class="bi bi-cloud-arrow-up"></i> Submit Pengaduan</span>
+                            <span v-else>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <label> Submit Pengaduan</label>
+                            </span>
+                        </button>
+                    </div>
+
                 </form><!-- End floating Labels Form -->
 
             <!-- content -->
@@ -145,10 +202,14 @@ export default {
             lantai : '',
             nomor_handphone : '',
             judul_pengaduan : '',
+            dekskripsi_pelaporan: '',
+            picture_pre: null,
         },
-        
-        error : {},//error clientside
+        picture_pre_preview: null,v //untuk preview
 
+        error : {},//error clientside
+        errorMessages: {}, //error serverside
+        loadingSubmitPengaduan: false,
         loading : false,
         baseUrl: process.env.BE_APP_BASE_URL,
         token: localStorage.getItem('tokenCallIT'),
@@ -179,6 +240,81 @@ export default {
             console.error("Terjadi kesalahan:", error);
         } finally {
             this.loading = false;  
+        }
+    },
+
+    //event file picture pre
+    onFileChange(event) {
+        const files = event.target.files;
+        if (files && files.length > 0) {
+            this.formData.picture_pre = []; // Inisialisasi array untuk menyimpan file-file picture_pre
+            this.picture_pre_preview = []; // Inisialisasi array untuk preview photo pre
+            this.error.picture_pre = false;
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                this.formData.picture_pre.push(file);
+
+                // ------Menyimpan base64 untuk preview photo------//
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.picture_pre_preview.push(e.target.result);
+                };
+                reader.readAsDataURL(file);
+                // ------------------------------------------------//
+                
+            }
+        } else {
+            this.error.picture_pre = true;
+        }
+    },
+
+    // submit form pengaduan
+    submitFormPengaduan() {
+        this.loadingSubmitPengaduan = true //progres btn
+        this.error = {};
+        //validation
+        const requiredFields = ['kategori_pengaduan_id', 'lokasi', 'lantai', 'judul_pengaduan', 'dekskripsi_pelaporan','nomor_handphone'];
+        requiredFields.forEach(field => { 
+            
+            console.log(this.formData[field])
+            if (!this.formData[field]) {
+            this.error[field] = true;
+            setTimeout(()=>{ this.loadingSubmitPengaduan = false },1000);
+            }else{
+            this.error[field] = false;// fill
+            }
+        });
+        const hasErrors = requiredFields.some(field => this.error[field]);
+        if (!hasErrors) {
+            this.sendStoreKategoriPengaduan();
+        }
+    },
+
+    //store form data
+    async sendStoreKategoriPengaduan() {
+        try {
+            const response = await axios.post(`${this.baseUrl}/api/store_pengaduan`, this.formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${this.token}`,
+                },
+            });
+
+            this.Toasttt('Successfully', 'success', 'Data Pengaduan Successfully Stored')
+            this.errorMessages = [];
+            return response
+
+        } catch (error) {
+            if(error.response.data.message && error.response.status == 400){
+            this.errorMessages = [];
+            for (let field in error.response.data.message) { //list error 400
+                this.errorMessages.push(...error.response.data.message[field]);
+            }
+            }
+            console.log(error.response.data.message)
+        } finally { 
+            this.loadingSubmitPengaduan = false
         }
     },
 
@@ -265,5 +401,5 @@ export default {
           opacity: 0;
       }
   }  
-  
+
 </style>
