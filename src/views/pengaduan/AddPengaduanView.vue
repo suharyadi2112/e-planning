@@ -205,7 +205,7 @@ export default {
             dekskripsi_pelaporan: '',
             picture_pre: null,
         },
-        picture_pre_preview: null,v //untuk preview
+        picture_pre_preview: null, //untuk preview
 
         error : {},//error clientside
         errorMessages: {}, //error serverside
@@ -262,7 +262,7 @@ export default {
                 };
                 reader.readAsDataURL(file);
                 // ------------------------------------------------//
-                
+
             }
         } else {
             this.error.picture_pre = true;
