@@ -374,12 +374,12 @@ export default {
         });
         const hasErrors = requiredFields.some(field => this.error[field]);
         if (!hasErrors) {
-            this.sendStoreKategoriPengaduan();
+            this.sendStorePengaduan();
         }
     },
 
     //store form data
-    async sendStoreKategoriPengaduan() {
+    async sendStorePengaduan() {
         try {
             const response = await axios.post(`${this.baseUrl}/api/store_pengaduan`, this.formData, {
                 headers: {

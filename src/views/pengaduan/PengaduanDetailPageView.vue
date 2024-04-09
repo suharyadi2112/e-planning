@@ -32,7 +32,7 @@
             </template>
             
             <template v-else>
-                <div style="text-align: center;" class="fade-in">
+                <div style="text-align: center;" class="fade-in-worker-single">
                     <img src="../../../public/assets/img/logologin.png" alt="Profile" class="rounded-circle">
                     <h2>{{ items.kode_laporan }} </h2>
                     <br>
@@ -67,7 +67,7 @@
           <div class="card">
             <div class="card-body pt-3">
               <!-- Bordered Tabs -->
-              <ul class="nav nav-tabs nav-tabs-bordered" role="tablist">
+              <ul v-if="ProfileOne" class="nav nav-tabs nav-tabs-bordered fade-in-worker-single" role="tablist">
                 <li class="nav-item" role="pengaduanTab">
                   <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview" aria-selected="true" role="tab"><i class="bi bi-eye"></i> Overview</button>
                 </li>
@@ -94,7 +94,7 @@
                 <template v-else>
 
                     <!-- OVERVIEW DETAIL PENGADUAN -->
-                    <div class="tab-pane fade-in profile-overview active" id="profile-overview" role="tabpanel">
+                    <div class="tab-pane fade-in profile-overview active fade-in-worker-single" id="profile-overview" role="tabpanel">
                         <h5 class="card-title">Pengaduan Details</h5>
 
                         <div class="row">
@@ -157,7 +157,7 @@
                     </div>
 
                     <!-- WORKER ASSIGN -->
-                    <div class="tab-pane fade-in assign-to-overview" id="assign-to-overview" role="tabpanel">
+                    <div class="tab-pane fade-in-worker-single assign-to-overview" id="assign-to-overview" role="tabpanel">
                         <div class="col-12" v-if="errorMessages.length > 0">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <li v-for="(errorMessage, index) in errorMessages" :key="index"><i class="bi bi-exclamation-circle"></i> {{ errorMessage }}</li>
@@ -165,10 +165,10 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-sm-5">
                                 <h3 class="card-title">Workers on this job <span>| {{ items.workers.length }} Orang</span></h3>
                             </div> 
-                            <div class="col-6">
+                            <div class="col-7">
                                 <div class="input-group" style="margin-top:5px">
                                     <span class="input-group-text text-white bg-success" id="basic-addon1"><i class="bi bi-person-check-fill"></i></span>
                                     <VueMultiselect
@@ -176,6 +176,7 @@
                                     placeholder="Select your workers"
                                     :options="itemUserWorkers"
                                     :resetAfter="true"
+                                    :custom-label="nameWithJabatan"
                                     label="name"
                                     track-by="id"
                                     class="form-control"
@@ -185,7 +186,7 @@
                                 </div>
                                 <small class="text-muted" style="font-size:12px; text-align: justify;"><i>#note tambah workers bisa dilakukan disini.</i></small>
                             </div>
-                          </div>
+                        </div>
                         <table class="table table-hover shadow-sm">
                             <thead>
                                 <tr class="table-primary">
@@ -224,28 +225,48 @@
                     </div>
                     
                     <!-- PICTURE PRE -->
-                    <div class="tab-pane fade-in picture-pre" id="picture-pre" role="tabpanel">
-
-                        <h3 class="card-title">Picture Pre <span>| {{ items.detailpengaduan.filter(item => item.tipe === 'pre').length }} picture</span></h3>
-                        <div v-if="items.detailpengaduan.filter(item => item.tipe === 'pre').length > 0" class="gallery">
-                            <div class="gallery-item" v-for="itemDetailPengaduan in items.detailpengaduan" :key="itemDetailPengaduan.id" >
-                                <!-- hanya picture pre yang ditampikan -->
-                                <img v-if="itemDetailPengaduan.tipe === 'pre'" :src="`${baseUrl}/storage/${itemDetailPengaduan.picture}`" alt="Photo pengaduan pre">
-                                <div class="overlay">
-                                    <div class="overlay-content">
-                                        <a @click="PopUpPictures(itemDetailPengaduan.picture, items.lokasi, items.lantai, itemDetailPengaduan.tipe)" class="text-white" style="cursor: zoom-in;">Popup this picture</a>
+                    <div class="tab-pane fade-in-worker-single picture-pre" id="picture-pre" role="tabpanel">
+                        <div class="col-12" v-if="errorMessages.length > 0">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <li v-for="(errorMessage, index) in errorMessages" :key="index"><i class="bi bi-exclamation-circle"></i> {{ errorMessage }}</li>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <h3 class="card-title">Picture Pre <span>| {{ items.detailpengaduan.filter(item => item.tipe === 'pre').length }} picture</span></h3>
+                            </div> 
+                            <div class="col-sm-7 pt-md-2 pb-3">
+                                <button class="btn btn-info btn-sm shadow buttonAddPicturePre" @click="addPicturePre()" role="button">
+                                    <i class="bi bi-plus-circle"></i> add picture pre
+                                </button>
+                            </div>
+                        </div>
+                        <div v-if="loadingAddWorker" class="d-flex justify-content-center text-primary m-3">
+                            <strong role="status" class="pt-1" style="padding-right: 2rem;">Loading...</strong>
+                            <div class="spinner-border shadow" aria-hidden="true"></div>
+                        </div>
+                        <template v-else> 
+                            <div v-if="items.detailpengaduan.filter(item => item.tipe === 'pre').length > 0" class="gallery fade-in-worker-single">
+                                <div class="gallery-item" v-for="itemDetailPengaduan in items.detailpengaduan" :key="itemDetailPengaduan.id" >
+                                    <!-- hanya picture pre yang ditampikan -->
+                                    <img v-if="itemDetailPengaduan.tipe === 'pre'" :src="`${baseUrl}/storage/${itemDetailPengaduan.picture}`" alt="Photo pengaduan pre">
+                                    <div class="overlay">
+                                        <div class="overlay-content">
+                                            <a @click="PopUpPictures(itemDetailPengaduan.picture, items.lokasi, items.lantai, itemDetailPengaduan.tipe)" class="text-white" style="cursor: zoom-in;">Popup this picture</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div v-else class="alert alert-info" role="alert" style="text-align:center;">
-                           <i class="bi bi-emoji-dizzy"></i> No photos picture pre!
-                        </div>
+                            <div v-else class="alert alert-info" role="alert" style="text-align:center;">
+                            <i class="bi bi-emoji-dizzy"></i> No photos picture pre!
+                            </div>
+                        </template>
 
                     </div>
 
                     <!-- PICTURE POST -->
-                    <div class="tab-pane fade-in picture-post" id="picture-post" role="tabpanel">
+                    <div class="tab-pane fade-in-worker-single picture-post" id="picture-post" role="tabpanel">
 
                         <h3 class="card-title">Picture Post <span>| {{ items.detailpengaduan.filter(item => item.tipe === 'post').length }} picture</span></h3>
                         <div v-if="items.detailpengaduan.filter(item => item.tipe === 'post').length > 0" class="gallery">
@@ -298,6 +319,7 @@ export default {
             DelWorkerSingleBtn: false,
             formData: {
                 user_id:[],
+                picture_pre:null,
             },
             baseUrl: process.env.BE_APP_BASE_URL,
             token: localStorage.getItem('tokenCallIT'),
@@ -431,6 +453,9 @@ export default {
             }
         },
 
+        nameWithJabatan ({ name, jabatan }) { //custom label
+            return `${name} — [${jabatan}]`
+        },
 
         PopUpPictures(urlPictures, lokasi, lantai, tipe) {
             this.$swal({
@@ -441,6 +466,52 @@ export default {
                 // imageHeight: 200,
                 imageAlt: `Picture ${tipe}`
             });
+        },
+
+        async addPicturePre(){
+            const { value: files } = await this.$swal({
+                title: "Select picture pre",
+                input: "file",
+                inputAttributes: {
+                    "accept": "image/*",
+                    "aria-label": "Upload picture pre",
+                    "multiple": true,
+                }
+            });
+            
+            try {
+
+                this.loadingAddWorker = true
+
+                if (files && files.length > 0) {
+                    const formData = new FormData();
+                    Array.from(files).forEach(file => {
+                        formData.append('picture_pre[]', file);
+                    });
+                    // Kirim formulir dengan gambar ke server
+                    const response = await axios.post(`${this.baseUrl}/api/store_picture_pre_pengaduan/${this.idPengaduan}`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            'Authorization': `Bearer ${this.token}`,
+                        },
+                    });
+
+                    this.Toasttt('Successfully', 'success', 'Picture Pre Successfully Stored');
+                    this.errorMessages = [];
+                    this.fetchData();
+                    return response;
+                
+                }
+
+            } catch (error) {
+                if (error.response && error.response.status === 400) {
+                    this.errorMessages = [];
+                    for (let field in error.response.data.message) { //list error 400
+                        this.errorMessages.push(...error.response.data.message[field]);
+                    }
+                }
+                console.error(error.response.data.message);
+            }
         },
 
         Toasttt(msg, type, detail){
@@ -507,42 +578,54 @@ export default {
     }
     /*picture pre*/
     .gallery {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    .gallery-item {
+        position: relative;
+        overflow: hidden;
+    }
+    .gallery-item img {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: cover; /* Menyesuaikan gambar ke area yang tersedia tanpa merubah aspek rasio */
+        aspect-ratio: 1 / 1; /* Menetapkan rasio aspek gambar menjadi 1:1 */
+    }
+    .gallery-item:hover img {
+        transform: scale(1.1);
+    }
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+    .gallery-item:hover .overlay {
+        opacity: 1;
+    }
+    .overlay-content {
+        text-align: center;
+    }
+
+    /* ponsel */
+    @media screen and (max-width: 767px) { 
+        .buttonAddPicturePre{
         }
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
+    }
+    /* dekstop */
+    @media screen and (min-width: 768px) {
+        .buttonAddPicturePre{
+            float: right;
         }
-        .gallery-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-            object-fit: cover; /* Menyesuaikan gambar ke area yang tersedia tanpa merubah aspek rasio */
-            aspect-ratio: 1 / 1; /* Menetapkan rasio aspek gambar menjadi 1:1 */
-        }
-        .gallery-item:hover img {
-            transform: scale(1.1);
-        }
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .gallery-item:hover .overlay {
-            opacity: 1;
-        }
-        .overlay-content {
-            text-align: center;
-        }
+    }
 </style>
