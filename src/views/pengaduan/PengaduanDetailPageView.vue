@@ -248,15 +248,19 @@
                         </div>
                         <template v-else> 
                             <div v-if="items.detailpengaduan.filter(item => item.tipe === 'pre').length > 0" class="gallery fade-in-worker-single">
-                                <div class="gallery-item" v-for="itemDetailPengaduan in items.detailpengaduan" :key="itemDetailPengaduan.id" >
-                                    <!-- hanya picture pre yang ditampikan -->
-                                    <img v-if="itemDetailPengaduan.tipe === 'pre'" :src="`${baseUrl}/storage/${itemDetailPengaduan.picture}`" alt="Photo pengaduan pre">
-                                    <div class="overlay">
-                                        <div class="overlay-content">
-                                            <a @click="PopUpPictures(itemDetailPengaduan.picture, items.lokasi, items.lantai, itemDetailPengaduan.tipe)" class="text-white" style="cursor: zoom-in;">Popup this picture</a>
+                                <template v-for="itemDetailPengaduan in items.detailpengaduan" :key="itemDetailPengaduan.id" >
+                                    <template v-if="itemDetailPengaduan.tipe === 'pre'">
+                                        <div class="gallery-item" >
+                                            <!-- hanya picture pre yang ditampikan -->
+                                            <img v-if="itemDetailPengaduan.tipe === 'pre'" :src="`${baseUrl}/storage/${itemDetailPengaduan.picture}`" alt="Photo pengaduan pre">
+                                            <div class="overlay">
+                                                <div class="overlay-content">
+                                                    <a @click="PopUpPictures(itemDetailPengaduan.picture, items.lokasi, items.lantai, itemDetailPengaduan.tipe)" class="text-white" style="cursor: zoom-in;">Popup this picture</a>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
+                                    </template>
+                                </template>
                             </div>
                             <div v-else class="alert alert-info" role="alert" style="text-align:center;">
                             <i class="bi bi-emoji-dizzy"></i> No photos picture pre!
@@ -268,22 +272,47 @@
                     <!-- PICTURE POST -->
                     <div class="tab-pane fade-in-worker-single picture-post" id="picture-post" role="tabpanel">
 
-                        <h3 class="card-title">Picture Post <span>| {{ items.detailpengaduan.filter(item => item.tipe === 'post').length }} picture</span></h3>
-                        <div v-if="items.detailpengaduan.filter(item => item.tipe === 'post').length > 0" class="gallery">
-                            <div class="gallery-item" v-for="itemDetailPengaduan in items.detailpengaduan" :key="itemDetailPengaduan.id" >
-                                <!-- hanya picture pre yang ditampikan -->
-                                <img v-if="itemDetailPengaduan.tipe === 'post'" :src="`${baseUrl}/storage/${itemDetailPengaduan.picture}`" alt="Photo pengaduan post">
-                                <div class="overlay">
-                                    <div class="overlay-content">
-                                        <a @click="PopUpPictures(itemDetailPengaduan.picture, items.lokasi, items.lantai, itemDetailPengaduan.tipe)" class="text-white" style="cursor: zoom-in;">Popup this picture</a>
-                                    </div>
-                                </div>
+                        <div class="col-12" v-if="errorMessages.length > 0">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <li v-for="(errorMessage, index) in errorMessages" :key="index"><i class="bi bi-exclamation-circle"></i> {{ errorMessage }}</li>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
-
                         </div>
+
+                        <div class="row">
+                            <div class="col-sm-5">
+                                 <h3 class="card-title">Picture Post <span>| {{ items.detailpengaduan.filter(item => item.tipe === 'post').length }} picture</span></h3>
+                            </div> 
+                            <div class="col-sm-7 pt-md-2 pb-3">
+                                <button class="btn btn-info btn-sm shadow buttonAddPicturePost" @click="addPicturePost()" role="button">
+                                    <i class="bi bi-plus-circle"></i> add picture post
+                                </button>
+                            </div>
+                        </div>
+                        <div v-if="loadingAddWorker" class="d-flex justify-content-center text-primary m-3">
+                            <strong role="status" class="pt-1" style="padding-right: 2rem;">Loading...</strong>
+                            <div class="spinner-border shadow" aria-hidden="true"></div>
+                        </div>
+                        <template v-else> 
+                            <div v-if="items.detailpengaduan.filter(item => item.tipe === 'post').length > 0" class="gallery fade-in-worker-single">
+                                <template v-for="itemDetailPengaduan in items.detailpengaduan" :key="itemDetailPengaduan.id" >
+                                    <template v-if="itemDetailPengaduan.tipe === 'post'">
+                                        <div class="gallery-item" >
+                                            <!-- hanya picture pre yang ditampikan -->
+                                                <img :src="`${baseUrl}/storage/${itemDetailPengaduan.picture}`" alt="Photo pengaduan post">
+                                                <div class="overlay">
+                                                    <div class="overlay-content">
+                                                        <a @click="PopUpPictures(itemDetailPengaduan.picture, items.lokasi, items.lantai, itemDetailPengaduan.tipe)" class="text-white" style="cursor: zoom-in;">Popup this picture</a>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    </template>
+                                </template>
+                            </div>
                         <div v-else class="alert alert-info" role="alert" style="text-align:center;">
                            <i class="bi bi-emoji-dizzy"></i> No photos picture post!
                         </div>
+                        </template>
                     </div>
 
                 </template>
@@ -320,6 +349,7 @@ export default {
             formData: {
                 user_id:[],
                 picture_pre:null,
+                picture_post:null,
             },
             baseUrl: process.env.BE_APP_BASE_URL,
             token: localStorage.getItem('tokenCallIT'),
@@ -476,14 +506,26 @@ export default {
                     "accept": "image/*",
                     "aria-label": "Upload picture pre",
                     "multiple": true,
+                },
+                allowOutsideClick: false,
+                showCloseButton: true ,
+                showCancelButton: true, 
+                confirmButtonText: 'Submit', 
+                cancelButtonText: 'Close',
+                inputValidator: (value) => {
+                    if (!value || value.length === 0) {
+                        return 'You need to select at least one file';
+                    }
                 }
+              
             });
             
             try {
 
-                this.loadingAddWorker = true
-
                 if (files && files.length > 0) {
+
+                    this.loadingAddWorker = true
+
                     const formData = new FormData();
                     Array.from(files).forEach(file => {
                         formData.append('picture_pre[]', file);
@@ -497,6 +539,64 @@ export default {
                     });
 
                     this.Toasttt('Successfully', 'success', 'Picture Pre Successfully Stored');
+                    this.errorMessages = [];
+                    this.fetchData();
+                    return response;
+                
+                }
+
+            } catch (error) {
+                if (error.response && error.response.status === 400) {
+                    this.errorMessages = [];
+                    for (let field in error.response.data.message) { //list error 400
+                        this.errorMessages.push(...error.response.data.message[field]);
+                    }
+                }
+                console.error(error.response.data.message);
+            }
+        },
+
+        async addPicturePost(){
+            const { value: files } = await this.$swal({
+                title: "Select picture post",
+                input: "file",
+                inputAttributes: {
+                    "accept": "image/*",
+                    "aria-label": "Upload picture post",
+                    "multiple": true,
+                },
+                allowOutsideClick: false,
+                showCloseButton: true ,
+                showCancelButton: true, 
+                confirmButtonText: 'Submit', 
+                cancelButtonText: 'Close',
+                inputValidator: (value) => {
+                    if (!value || value.length === 0) {
+                        return 'You need to select at least one file';
+                    }
+                }
+              
+            });
+            
+            try {
+
+                if (files && files.length > 0) {
+
+                    this.loadingAddWorker = true
+
+                    const formData = new FormData();
+                    Array.from(files).forEach(file => {
+                        formData.append('picture_post[]', file);
+                    });
+                    // Kirim formulir dengan gambar ke server
+                    const response = await axios.post(`${this.baseUrl}/api/store_picture_post_pengaduan/${this.idPengaduan}`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            'Authorization': `Bearer ${this.token}`,
+                        },
+                    });
+
+                    this.Toasttt('Successfully', 'success', 'Picture Post Successfully Stored');
                     this.errorMessages = [];
                     this.fetchData();
                     return response;
@@ -621,10 +721,15 @@ export default {
     @media screen and (max-width: 767px) { 
         .buttonAddPicturePre{
         }
+        .buttonAddPicturePost{
+        }
     }
     /* dekstop */
     @media screen and (min-width: 768px) {
         .buttonAddPicturePre{
+            float: right;
+        }
+        .buttonAddPicturePost{
             float: right;
         }
     }
