@@ -49,13 +49,14 @@
                 </div>
                 <div class="table-responsive">
                   <table class="table table-hover table-bordered shadow-sm caption-top table-sm">
-                    <caption class="pb-2 pt-0">List of kategori pengaduan</caption>
+                    <caption class="pb-2 pt-0">List pengaduan</caption>
                     <thead class="table-primary">
                       <tr style="vertical-align:middle; text-align: center;">
                         <th scope="col" style="text-align: center;">#</th>
                         <th scope="col">Kode</th>
                         <th scope="col">Pelapor</th>
                         <th scope="col">Judul</th>
+                        <th scope="col">Lantai</th>
                         <th scope="col">Kategori</th>
                         <th scope="col">Prioritas</th>
                         <th scope="col">Status</th>
@@ -73,8 +74,15 @@
                       </tr>
                       <tr v-else v-for="item in items" :key="item.id" style="vertical-align:middle;" class="fade-in-pengaduan-view">
                         <th scope="row"  width="5%;" style="text-align: center;">{{ item.number }}</th>
-                        <td nowrap="" width="10px;" style="text-align: center;">
-                            <router-link :to="'/detail-page-pengaduan/' + item.id">{{ item.kode_laporan }}</router-link>
+                        <td nowrap="" width="10px;" style="text-align: center;"  @click="toggleExpandNameKode(item.id)">
+                            <router-link :to="'/detail-page-pengaduan/' + item.id">
+                                <span v-if="!expandedNameKode.includes(item.id)">
+                                  {{ shortenNameKode(item.kode_laporan) }}
+                                </span>
+                                <span v-else>
+                                  {{ item.kode_laporan }}
+                                </span>
+                            </router-link>
                         </td>
                         <td nowrap=""  width="10px;" style="text-align: center;" >{{ item.pelapor.name }}</td>
                       
@@ -86,8 +94,9 @@
                             {{ item.judul_pengaduan }}
                           </span>
                         </td>
+
+                        <td nowrap=""  width="5px;" style="text-align: center;" >{{ item.lantai }}</td>
                         <td nowrap=""  width="10px;" style="text-align: center;" >{{ item.kategoripengaduan.nama }}</td>
-                      
 
                         <td nowrap="" width="10px;" style="text-align: center;">
                             <span style="width:60px;" :class="{'badge bg-danger': item.prioritas.toLowerCase() === 'tinggi', 'badge bg-warning': item.prioritas.toLowerCase() === 'sedang', 'badge bg-primary': item.prioritas.toLowerCase() !== 'tinggi' && item.prioritas.toLowerCase() !== 'sedang'}">{{ item.prioritas.toLowerCase() }}</span>
@@ -107,7 +116,7 @@
                               <i class="bi bi-pencil"></i>
                             </router-link>
 
-                            <button @click="DeleteKatPeng(item.id)" class="btn btn-outline-danger btn-sm m-1 shadow" :disabled="DeleteKatPengBtn" title="Delete">
+                            <button @click="DeletePengaduan(item.id)" class="btn btn-outline-danger btn-sm m-1 shadow" :disabled="DeletePengaduanBtn" title="Delete">
                               <i class="bi bi-trash"></i>
                             </button>
                         </td>
@@ -181,8 +190,10 @@ export default {
       FormDataUpdate : {}, //data for update
       LoadKatpeng: true,
 
-      DeleteKatPengBtn : false,
+      DeletePengaduanBtn : false,
       expandedName: [], //judul expand
+
+      expandedNameKode: [],//kode expand
     }
   },
   mounted() {
@@ -341,6 +352,21 @@ export default {
       }
     },
 
+    toggleExpandNameKode(itemId) {
+      if (this.expandedNameKode.includes(itemId)) {
+        this.expandedNameKode = this.expandedNameKode.filter(id => id !== itemId);
+      } else {
+        this.expandedNameKode.push(itemId);
+      }
+    },
+    shortenNameKode(name) {
+      if (name.length > 10) {
+        return name.substring(0, 1) + '...' + name.substring(name.length - 5);
+      } else {
+        return name;
+      }
+    },
+
     // ------------------update section---------------------
     async openUpdateKatPeng(id){
       this.OpenUpdateKatPengBtn = true
@@ -364,7 +390,7 @@ export default {
       }
     },
 
-    DeleteKatPeng(id){
+    DeletePengaduan(id){
       this.$swal({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -376,14 +402,14 @@ export default {
         confirmButtonText: "Yes, delete it!",
         preConfirm: async () => {
           try {
-              this.DeleteKatPengBtn = true
-              const response = await axios.delete(`${this.baseUrl}/api/del_kategori_pengaduan/${id}`,  {
+              this.DeletePengaduanBtn = true
+              const response = await axios.delete(`${this.baseUrl}/api/delete_pengaduan/${id}`,  {
                 headers: {
                   'Authorization': `Bearer ${this.token}`,
                 },
               });
               
-              this.DeleteKatPengBtn = false
+              this.DeletePengaduanBtn = false
               return response
 
             } catch (error) {
@@ -392,6 +418,11 @@ export default {
                   Request failed: ${error.response.data.message}
                 `);
               }
+
+              if (error.response && error.response.status == 500 || error.response.status == 501) {
+                    this.Toasttt('Oops. Pengaduan Not Found.', 'error');
+                    this.$router.push('/pengaduan');
+                }
               console.error(error,"check error");
             }
         },
