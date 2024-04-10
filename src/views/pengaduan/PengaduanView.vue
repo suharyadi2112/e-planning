@@ -103,9 +103,9 @@
                               <i class="bi bi-eye"></i>
                             </button>
 
-                            <button @click="openUpdateKatPeng(item.id)" class="btn btn-primary btn-sm m-1 shadow" data-bs-toggle="modal" data-bs-target="#updateKatpeng" :disabled="OpenUpdateKatPengBtn" title="Update">
+                            <router-link :to="'/edit-pengaduan/'+item.id" class="btn btn-info btn-sm shadow text-warning-emphasis" role="button">
                               <i class="bi bi-pencil"></i>
-                            </button>
+                            </router-link>
 
                             <button @click="DeleteKatPeng(item.id)" class="btn btn-outline-danger btn-sm m-1 shadow" :disabled="DeleteKatPengBtn" title="Delete">
                               <i class="bi bi-trash"></i>

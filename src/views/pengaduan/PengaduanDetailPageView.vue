@@ -2,7 +2,7 @@
 <main id="main" class="main">
     <section class="section profile">
       <div class="row">
-        <div class="col-sm-10">
+        <div class="col-sm-7">
             <div class="pagetitle"> 
             <h1 class="text-left">More Detail Pengaduan</h1>
                 <nav>
@@ -14,10 +14,15 @@
                 </nav>
             </div>
         </div> 
-        <div class="col-sm-2 text-end">
+        <div class="col-sm-5 text-end">
             <router-link to="/pengaduan">
-                <button  class="btn btn-warning btn-sm m-1 shadow" title="Back">
-                    <i class="bi bi-arrow-left"></i> 
+                <button  class="btn btn-warning btn-sm m-1 shadow" title="Back to dashboard pengaduan">
+                    <i class="bi bi-arrow-left"> dashboard</i> 
+                </button>
+            </router-link>
+            <router-link :to="{ name: 'editpengaduan', params: { id: this.$route.params.id } }" >
+                <button  class="btn btn-outline-primary btn-sm m-1 shadow" title="Go to edit pengaduan">
+                    <i class="bi bi-arrow-left"> go to edit pengaduan</i> 
                 </button>
             </router-link>
         </div>
@@ -69,20 +74,16 @@
               <!-- Bordered Tabs -->
               <ul v-if="ProfileOne" class="nav nav-tabs nav-tabs-bordered fade-in-worker-single" role="tablist">
                 <li class="nav-item" role="pengaduanTab">
-                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview" aria-selected="true" role="tab"><i class="bi bi-eye"></i> Overview</button>
-                </li>
+                  <button @click="navigateToAssignToOverview('profile-overview')" class="nav-link" :class="{ 'active': activeTab === 'profile-overview' }" data-bs-toggle="tab" data-bs-target="#profile-overview" aria-selected="true" role="tab"><i class="bi bi-eye"></i> Overview</button></li>
 
                 <li class="nav-item" role="pengaduanTab">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#assign-to-overview" aria-selected="true" role="tab"><i class="bi bi-people-fill"></i> Assign To</button>
-                </li>
+                  <button @click="navigateToAssignToOverview('assign-to-overview')" class="nav-link" :class="{ 'active': activeTab === 'assign-to-overview' }" data-bs-toggle="tab" data-bs-target="#assign-to-overview" aria-selected="true" role="tab"><i class="bi bi-people-fill"></i> Assign To</button></li>
 
                 <li class="nav-item" role="pengaduanTab">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#picture-pre" aria-selected="true" role="tab"><i class="bi bi-images"></i> Picture Pre</button>
-                </li>
+                  <button @click="navigateToAssignToOverview('picture-pre')" class="nav-link" :class="{ 'active': activeTab === 'picture-pre' }" data-bs-toggle="tab" data-bs-target="#picture-pre" aria-selected="true" role="tab"><i class="bi bi-images"></i> Picture Pre</button></li>
 
                 <li class="nav-item" role="pengaduanTab">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#picture-post" aria-selected="true" role="tab"><i class="bi bi-image-alt"></i> Picture Post</button>
-                </li>
+                  <button @click="navigateToAssignToOverview('picture-post')" class="nav-link" :class="{ 'active': activeTab === 'picture-post' }" data-bs-toggle="tab" data-bs-target="#picture-post" aria-selected="true" role="tab"><i class="bi bi-image-alt"></i> Picture Post</button></li>
               </ul>
             
               <div class="tab-content pt-2">
@@ -94,7 +95,7 @@
                 <template v-else>
 
                     <!-- OVERVIEW DETAIL PENGADUAN -->
-                    <div class="tab-pane fade-in profile-overview active fade-in-worker-single" id="profile-overview" role="tabpanel">
+                    <div class="tab-pane fade-in profile-overview fade-in-worker-single" :class="{ 'active': activeTab === 'profile-overview' }" id="profile-overview" role="tabpanel">
                         <h5 class="card-title">Pengaduan Details</h5>
 
                         <div class="row">
@@ -157,7 +158,7 @@
                     </div>
 
                     <!-- WORKER ASSIGN -->
-                    <div class="tab-pane fade-in-worker-single assign-to-overview" id="assign-to-overview" role="tabpanel">
+                    <div class="tab-pane fade-in-worker-single assign-to-overview" :class="{ 'active': activeTab === 'assign-to-overview' }" id="assign-to-overview" role="tabpanel">
                         <div class="col-12" v-if="errorMessages.length > 0">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <li v-for="(errorMessage, index) in errorMessages" :key="index"><i class="bi bi-exclamation-circle"></i> {{ errorMessage }}</li>
@@ -225,7 +226,7 @@
                     </div>
                     
                     <!-- PICTURE PRE -->
-                    <div class="tab-pane fade-in-worker-single picture-pre" id="picture-pre" role="tabpanel">
+                    <div class="tab-pane fade-in-worker-single picture-pre" :class="{ 'active': activeTab === 'picture-pre' }" id="picture-pre" role="tabpanel">
                         <div class="col-12" v-if="errorMessages.length > 0">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <li v-for="(errorMessage, index) in errorMessages" :key="index"><i class="bi bi-exclamation-circle"></i> {{ errorMessage }}</li>
@@ -270,7 +271,7 @@
                     </div>
 
                     <!-- PICTURE POST -->
-                    <div class="tab-pane fade-in-worker-single picture-post" id="picture-post" role="tabpanel">
+                    <div class="tab-pane fade-in-worker-single picture-post" :class="{ 'active': activeTab === 'picture-post' }" id="picture-post" role="tabpanel">
 
                         <div class="col-12" v-if="errorMessages.length > 0">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -356,6 +357,16 @@ export default {
             idPengaduan : null,
             ProfileOne : false,
             errorMessages: {}, //error serverside
+
+            activeTab: '', // Inisialisasi variabel activeTab
+        }
+    },
+    created() {
+        const tab = this.$route.query.tab;
+        if (tab) {
+            this.activeTab = tab;
+        }else{
+            this.activeTab = 'profile-overview';
         }
     },
     mounted() {
@@ -394,6 +405,11 @@ export default {
                 if (error.response && error.response.status == 401) {
                     this.Toasttt('Unauthorized. You do not have access.', 'warning');
                     this.$router.push('/login');
+                }
+
+                if (error.response && error.response.status == 500 || error.response.status == 501) {
+                    this.Toasttt('Oops. Pengaduan Not Found.', 'error');
+                    this.$router.push('/pengaduan');
                 }
                 console.error("Terjadi kesalahan:", error);
             }
@@ -631,6 +647,12 @@ export default {
                 icon: type,
                 title: msg,
                 text: detail,
+            });
+        },
+
+        navigateToAssignToOverview(tab) { //tab navigasi
+            this.$router.push({ 
+                query: { tab: tab } 
             });
         },
 

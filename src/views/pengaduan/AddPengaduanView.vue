@@ -9,7 +9,7 @@
               <div class="row">
                 <div class="col-sm-9">
                   <div class="pagetitle"> 
-                    <h1 class="text-left">Pengaduan</h1>
+                    <h1 class="text-left">Add Pengaduan</h1>
                     <nav>
                       <ol class="breadcrumb breadJa">
                         <router-link :to="{ name: '/'}" class="breadcrumb-item">Home</router-link>
