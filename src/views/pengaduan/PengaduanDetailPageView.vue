@@ -84,6 +84,9 @@
 
                 <li class="nav-item" role="pengaduanTab">
                   <button @click="navigateToAssignToOverview('picture-post')" class="nav-link" :class="{ 'active': activeTab === 'picture-post' }" data-bs-toggle="tab" data-bs-target="#picture-post" aria-selected="true" role="tab"><i class="bi bi-image-alt"></i> Picture Post</button></li>
+
+                <li class="nav-item" role="pengaduanTab">
+                  <button @click="navigateToAssignToOverview('update-status')" class="nav-link bg-warning text-black" :class="{ 'active': activeTab === 'update-status' }" data-bs-toggle="tab" data-bs-target="#update-status" aria-selected="true" role="tab"><i class="bi bi-patch-question-fill"></i> <b>Update Status</b></button></li>
               </ul>
             
               <div class="tab-content pt-2">
@@ -315,6 +318,103 @@
                         </div>
                         </template>
                     </div>
+
+                    <!-- UPDATE STATUS -->
+                    <div class="tab-pane fade-in-worker-single update-status" :class="{ 'active': activeTab === 'update-status' }" id="update-status" role="tabpanel">
+
+                        <div class="col-12" v-if="errorMessages.length > 0">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <li v-for="(errorMessage, index) in errorMessages" :key="index"><i class="bi bi-exclamation-circle"></i> {{ errorMessage }}</li>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-5">
+                                 <h3 class="card-title">Update Status <span> | <b>{{ items.status_pelaporan }}</b> current status</span></h3>
+                            </div> 
+                            <div class="col-sm-7 pt-md-2 pb-3">
+                               
+                            </div>
+                        </div>
+                        <div v-if="loadingAddWorker" class="d-flex justify-content-center text-primary m-3">
+                            <strong role="status" class="pt-1" style="padding-right: 2rem;">Loading...</strong>
+                            <div class="spinner-border shadow" aria-hidden="true"></div>
+                        </div>
+                        <template v-else> 
+                            <!-- List group With Icons -->
+                            <div class="row">
+
+                                <div class="col-sm-6">
+                                    <div class="col-sm-12 d-flex justify-content-center align-items-center">
+                                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'waiting'">
+                                            <label class="btn btn-outline-secondary" for="btnradio1"><i class="bi bi-cart-plus"></i> <br>Waiting</label>
+
+                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'progress'">
+                                            <label class="btn btn-outline-warning" for="btnradio2"><i class="bi bi-hourglass-split"></i> <br>Progress</label>
+
+                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'done'">
+                                            <label class="btn btn-outline-success" for="btnradio3"><i class="bi bi-check-lg"></i> <br>Done</label>
+                                        </div>
+                                    </div><br>
+                                    <div class="alert p-0 m-0 w-50 mx-auto text-center" :class="{
+                                        'bg-secondary text-white': items.status_pelaporan.toLowerCase() === 'waiting',
+                                        'bg-warning': items.status_pelaporan.toLowerCase() === 'progress',
+                                        'bg-success text-white': items.status_pelaporan.toLowerCase() === 'done',
+                                    }">
+                                    <h3 class="m-0">
+                                        <i>{{ items.status_pelaporan }}</i>
+                                    </h3>
+                                    </div> 
+                                    <hr class="mt-3">
+                                    <small class="text-muted" style="font-size:12px;">#note: pilih diantara 3 pilihan tersebut untuk merubah status</small>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">
+                                            <i class="bi bi-people-fill me-1 text-primary"></i> Workers 
+                                            <span class="badge" :class="{ 'bg-success': items.workers.length > 0, 'bg-danger': items.workers.length === 0 }" style="float: right; ">
+                                                 <span v-if="items.workers.length === 0">
+                                                    <i class="bi bi-hourglass-split"></i> Incomplete
+                                                </span>
+                                                <span v-else>
+                                                    <i class="bi bi-check-lg"></i> Done
+                                                </span>
+                                            </span>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <i class="bi bi-images me-1 text-primary"></i> Picture Pre 
+                                            <span class="badge" :class="{ 'bg-success': items.detailpengaduan.filter(detail => detail.tipe === 'pre').length > 0, 'bg-danger': items.detailpengaduan.filter(detail => detail.tipe === 'pre').length === 0 }" style="float: right; ">
+                                                <span v-if="items.detailpengaduan.filter(detail => detail.tipe === 'pre').length === 0">
+                                                    <i class="bi bi-hourglass-split"></i> Incomplete
+                                                </span>
+                                                <span v-else>
+                                                    <i class="bi bi-check-lg"></i> Done
+                                                </span>
+                                            </span>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <i class="bi bi-images me-1 text-primary"></i> Picture Post
+                                            <span class="badge" :class="{ 'bg-success': items.detailpengaduan.filter(detail => detail.tipe === 'post').length > 0, 'bg-danger': items.detailpengaduan.filter(detail => detail.tipe === 'post').length === 0 }" style="float: right; ">
+                                                <span v-if="items.detailpengaduan.filter(detail => detail.tipe === 'post').length === 0">
+                                                    <i class="bi bi-hourglass-split"></i> Incomplete
+                                                </span>
+                                                <span v-else>
+                                                    <i class="bi bi-check-lg"></i> Done
+                                                </span>
+                                            </span>
+                                        </li>
+                                    </ul><!-- End List group With Icons -->
+                                </div>
+
+
+                            </div> <!-- div row -->
+
+                        </template>
+                    </div>
+
 
                 </template>
 
