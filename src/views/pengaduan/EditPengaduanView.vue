@@ -144,23 +144,26 @@
                         </div>
 
                         <hr>
-
-                        <div class="col-md-4">
+                        <label for="judul_pengaduan"><b>Untuk update lainnya, klik link dibawah.</b></label>
+                        <div class="col-md-3">
                             <div class="alert alert-primary" role="alert">
-                            <i class="bi bi-people"></i>
-                            Update Worker Klik <router-link :to="{ name: 'detailpagepengaduan', params: { id: this.$route.params.id }, query: { tab: 'assign-to-overview' } }" class="breadcrumb-item">Worker</router-link>.
+                            <i class="bi bi-people"></i> <router-link :to="{ name: 'detailpagepengaduan', params: { id: this.$route.params.id }, query: { tab: 'assign-to-overview' } }" class="breadcrumb-item" 
+                            >Update Worker <i class="bi bi-hand-index-thumb"></i></router-link>.
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="alert alert-secondary" role="alert">
-                            <i class="bi bi-images"></i>
-                            Update Picture Pre Klik <router-link :to="{ name: 'detailpagepengaduan', params: { id: this.$route.params.id }, query: { tab: 'picture-pre' } }" class="breadcrumb-item">Picture Pre</router-link>.
+                            <i class="bi bi-images"></i> <router-link :to="{ name: 'detailpagepengaduan', params: { id: this.$route.params.id }, query: { tab: 'picture-pre' } }" class="breadcrumb-item">Update Picture Pre <i class="bi bi-hand-index-thumb"></i></router-link>.
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="alert alert-secondary" role="alert">
-                            <i class="bi bi-images"></i>
-                            Update Picture Post Klik <router-link :to="{ name: 'detailpagepengaduan', params: { id: this.$route.params.id } , query: { tab: 'picture-post' } }" class="breadcrumb-item">Picture Post</router-link>.
+                            <i class="bi bi-images"></i> <router-link :to="{ name: 'detailpagepengaduan', params: { id: this.$route.params.id } , query: { tab: 'picture-post' } }" class="breadcrumb-item">Update Picture Post <i class="bi bi-hand-index-thumb"></i></router-link>.
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="alert alert-warning" role="alert">
+                            <i class="bi bi-images"></i> <router-link :to="{ name: 'detailpagepengaduan', params: { id: this.$route.params.id } , query: { tab: 'update-status' } }" class="breadcrumb-item">Update Status <i class="bi bi-hand-index-thumb"></i></router-link>.
                             </div>
                         </div>
                       
