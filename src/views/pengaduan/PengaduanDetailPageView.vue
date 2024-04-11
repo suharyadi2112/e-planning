@@ -59,7 +59,8 @@
                             'alert-primary': items.status_pelaporan.toLowerCase() !== 'progress' && items.status_pelaporan.toLowerCase() !== 'done' && items.status_pelaporan.toLowerCase() !== 'waiting'
                         }" 
                         role="alert">
-                        Status Pelaporan : <b>{{ items.status_pelaporan.toUpperCase() }}</b>
+                        <ProgressBar mode="indeterminate" style="height: 4px;" v-if="changeStatusLoading"></ProgressBar> 
+                        <span class="fade-in-worker-single" v-else> Status Pelaporan : <b>{{ items.status_pelaporan.toUpperCase() }}</b></span>
                     </div>
                 </div>
             </template>
@@ -348,13 +349,13 @@
                                 <div class="col-sm-6">
                                     <div class="col-sm-12 d-flex justify-content-center align-items-center">
                                         <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'waiting'">
+                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'waiting'" @click="updateStatusPengaduan('waiting')">
                                             <label class="btn btn-outline-secondary" for="btnradio1"><i class="bi bi-cart-plus"></i> <br>Waiting</label>
 
-                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'progress'">
+                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'progress'" @click="updateStatusPengaduan('progress')">
                                             <label class="btn btn-outline-warning" for="btnradio2"><i class="bi bi-hourglass-split"></i> <br>Progress</label>
 
-                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'done'">
+                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'done'" @click="updateStatusPengaduan('done')">
                                             <label class="btn btn-outline-success" for="btnradio3"><i class="bi bi-check-lg"></i> <br>Done</label>
                                         </div>
                                     </div><br>
@@ -363,9 +364,11 @@
                                         'bg-warning': items.status_pelaporan.toLowerCase() === 'progress',
                                         'bg-success text-white': items.status_pelaporan.toLowerCase() === 'done',
                                     }">
-                                    <h3 class="m-0">
-                                        <i>{{ items.status_pelaporan }}</i>
-                                    </h3>
+                                        <ProgressBar mode="indeterminate" style="height: 4px" v-if="changeStatusLoading"></ProgressBar>
+                                        
+                                        <h3 class="m-0 fade-in-worker-single" v-else>
+                                            <i>{{ items.status_pelaporan }}</i>
+                                        </h3>
                                     </div> 
                                     <hr class="mt-3">
                                     <small class="text-muted" style="font-size:12px;">#note: pilih diantara 3 pilihan tersebut untuk merubah status</small>
@@ -415,11 +418,9 @@
                         </template>
                     </div>
 
-
                 </template>
 
               </div><!-- End Bordered Tabs -->
-
             </div>
           </div>
 
@@ -459,6 +460,7 @@ export default {
             errorMessages: {}, //error serverside
 
             activeTab: '', // Inisialisasi variabel activeTab
+            changeStatusLoading: false,
         }
     },
     created() {
@@ -499,7 +501,8 @@ export default {
                 })
 
                 this.items = response.data.data;
-                this.loadingAddWorker = false
+                this.loadingAddWorker = false;
+                this.changeStatusLoading = false;
 
             } catch (error) {
                 if (error.response && error.response.status == 401) {
@@ -508,7 +511,7 @@ export default {
                 }
 
                 if (error.response && error.response.status == 500 || error.response.status == 501) {
-                    this.Toasttt('Oops. Pengaduan Not Found.', 'error');
+                    this.Toasttt('Oops. Something Wrong.', 'error');
                     this.$router.push('/pengaduan');
                 }
                 console.error("Terjadi kesalahan:", error);
@@ -536,7 +539,35 @@ export default {
             }
         },
 
-        handleSubmitWorker() {
+        async updateStatusPengaduan(statusNya){
+            try {
+                this.changeStatusLoading = true;
+                const response = await axios.put(`${this.baseUrl}/api/update_status_pengaduan/${this.idPengaduan}`, { status_pelaporan: statusNya }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.token}`,
+                    },
+                });
+                
+                this.Toasttt('Successfully', 'success', 'Status Pengaduan Successfully Changed')
+                this.fetchData();
+                return response;
+            } catch (error) {
+                if(error.response.data.message && error.response.status == 400){
+                    for (let field in error.response.data.message) { //list error 400
+                    this.errorMessages.push(...error.response.data.message[field]);
+                    }
+                }
+                if (error.response && error.response.status == 500 || error.response.status == 501) {
+                    this.Toasttt('Oops. Something Wrong.', 'error');
+                    this.$router.push('/pengaduan');
+                }
+                console.log(error.response.data.message)
+                this.changeStatusLoading = false;
+            }
+        },
+
+        handleSubmitWorker() { //handle worker
             try {
                 this.formData.user_id.push(this.selectedValuesWorkers.id); // Set user_id menjadi array, kebutuhan payload
                 console.log("Pilihan dipilih:", this.formData.user_id);
