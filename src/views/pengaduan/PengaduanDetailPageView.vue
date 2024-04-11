@@ -166,7 +166,7 @@
                         <div class="col-12" v-if="errorMessages.length > 0">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <li v-for="(errorMessage, index) in errorMessages" :key="index"><i class="bi bi-exclamation-circle"></i> {{ errorMessage }}</li>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="clearErrorMessages"></button>
                             </div>
                         </div>
                         <div class="row">
@@ -234,7 +234,7 @@
                         <div class="col-12" v-if="errorMessages.length > 0">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <li v-for="(errorMessage, index) in errorMessages" :key="index"><i class="bi bi-exclamation-circle"></i> {{ errorMessage }}</li>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="clearErrorMessages"></button>
                             </div>
                         </div>
                         <div class="row">
@@ -280,7 +280,7 @@
                         <div class="col-12" v-if="errorMessages.length > 0">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <li v-for="(errorMessage, index) in errorMessages" :key="index"><i class="bi bi-exclamation-circle"></i> {{ errorMessage }}</li>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="clearErrorMessages"></button>
                             </div>
                         </div>
 
@@ -326,7 +326,7 @@
                         <div class="col-12" v-if="errorMessages.length > 0">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <li v-for="(errorMessage, index) in errorMessages" :key="index"><i class="bi bi-exclamation-circle"></i> {{ errorMessage }}</li>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="clearErrorMessages"></button>
                             </div>
                         </div>
 
@@ -553,6 +553,7 @@ export default {
                 this.fetchData();
                 return response;
             } catch (error) {
+                this.errorMessages = [];
                 if(error.response.data.message && error.response.status == 400){
                     for (let field in error.response.data.message) { //list error 400
                     this.errorMessages.push(...error.response.data.message[field]);
@@ -759,6 +760,10 @@ export default {
                 }
                 console.error(error.response.data.message);
             }
+        },
+
+        clearErrorMessages() { //clear error maessage kalo close alert
+            this.errorMessages = [];
         },
 
         Toasttt(msg, type, detail){
