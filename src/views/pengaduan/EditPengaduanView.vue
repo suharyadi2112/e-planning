@@ -163,7 +163,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="alert alert-warning" role="alert">
-                            <i class="bi bi-images"></i> <router-link :to="{ name: 'detailpagepengaduan', params: { id: this.$route.params.id } , query: { tab: 'update-status' } }" class="breadcrumb-item">Update Status <i class="bi bi-hand-index-thumb"></i></router-link>.
+                            <i class="bi bi-images"></i> <router-link :to="{ name: 'detailpagepengaduan', params: { id: this.$route.params.id } , query: { tab: 'update-status' } }" class="breadcrumb-item">Update Status & Prioritas <i class="bi bi-hand-index-thumb"></i></router-link>.
                             </div>
                         </div>
                       

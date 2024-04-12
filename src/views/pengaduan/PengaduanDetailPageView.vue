@@ -48,7 +48,9 @@
                             'alert-primary': items.prioritas.toLowerCase() !== 'tinggi' && items.prioritas.toLowerCase() !== 'sedang'
                         }" 
                         role="alert">
-                        Prioritas : <b>{{ items.prioritas.toUpperCase() }}</b>
+                        
+                        <ProgressBar mode="indeterminate" style="height: 4px;" v-if="changePrioritasLoading"></ProgressBar> 
+                        <span class="fade-in-worker-single" v-else> Prioritas : <b>{{ items.prioritas.toUpperCase() }}</b></span>
                     </div>
 
                     <div class="alert" 
@@ -260,7 +262,9 @@
                                             <img v-if="itemDetailPengaduan.tipe === 'pre'" :src="`${baseUrl}/storage/${itemDetailPengaduan.picture}`" alt="Photo pengaduan pre">
                                             <div class="overlay">
                                                 <div class="overlay-content">
-                                                    <a @click="PopUpPictures(itemDetailPengaduan.picture, items.lokasi, items.lantai, itemDetailPengaduan.tipe)" class="text-white" style="cursor: zoom-in;">Popup this picture</a>
+                                                    <a @click="PopUpPictures(itemDetailPengaduan.picture, items.lokasi, items.lantai, itemDetailPengaduan.tipe)" class="text-white" style="cursor: zoom-in;"><i class="bi bi-eye"></i> Popup picture</a> | 
+
+                                                    <a @click="DeletePicture(itemDetailPengaduan.id)" class="text-white" style="cursor: pointer;"><i class="bi bi-trash"></i> Delete</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -307,7 +311,9 @@
                                                 <img :src="`${baseUrl}/storage/${itemDetailPengaduan.picture}`" alt="Photo pengaduan post">
                                                 <div class="overlay">
                                                     <div class="overlay-content">
-                                                        <a @click="PopUpPictures(itemDetailPengaduan.picture, items.lokasi, items.lantai, itemDetailPengaduan.tipe)" class="text-white" style="cursor: zoom-in;">Popup this picture</a>
+                                                        <a @click="PopUpPictures(itemDetailPengaduan.picture, items.lokasi, items.lantai, itemDetailPengaduan.tipe)" class="text-white" style="cursor: zoom-in;">Popup picture</a>
+
+                                                        <a @click="DeletePicture(itemDetailPengaduan.id)" class="text-white" style="cursor: pointer;"><i class="bi bi-trash"></i> Delete</a>
                                                     </div>
                                                 </div>
                                         </div>
@@ -338,68 +344,6 @@
                         
                         <template v-else> 
 
-                            <div class="row">
-                                <div class="col-sm-5">
-                                    <h3 class="card-title">Update Prioritas <span> | <b>{{ items.prioritas }}</b> current prioritas</span></h3>
-                                </div> 
-                                <div class="col-sm-7 pt-md-2 pb-3">
-                                
-                                </div>
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-sm-6">
-                                    <div class="col-sm-12 d-flex justify-content-center align-items-center">
-                                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                            <input v-if="!changeStatusLoading" type="radio" class="btn-check" name="btnradio" id="btnradioPrioritas1" autocomplete="off" :checked="items.prioritas.toLowerCase() === 'rendah'" @click="updateStatusPengaduan('rendah')">
-                                            <label class="btn btn-outline-primary" for="btnradioPrioritas1"> 
-                                                <div v-if="changeStatusLoading && currentStatus.toLowerCase() === 'rendah'" class="spinner-border spinner-border-sm" role="status">
-                                                    <span class="visually-hidden">Loading...</span>
-                                                </div>
-                                                <i v-else class="bi bi-1-circle-fill"></i>
-                                            <br>Rendah</label>
-
-                                            <input v-if="!changeStatusLoading" type="radio" class="btn-check" name="btnradio" id="btnradioPrioritas2" autocomplete="off" :checked="items.prioritas.toLowerCase() === 'sedang'" @click="updateStatusPengaduan('sedang')">
-                                            <label class="btn btn-outline-warning" for="btnradioPrioritas2">
-                                                <div v-if="changeStatusLoading && currentStatus.toLowerCase() === 'sedang'" class="spinner-border spinner-border-sm" role="status">
-                                                    <span class="visually-hidden">Loading...</span>
-                                                </div>
-                                                 <i v-else class="bi bi-2-circle-fill"></i>
-                                            <br>Sedang</label>
-
-                                            <input v-if="!changeStatusLoading" type="radio" class="btn-check" name="btnradio" id="btnradioPrioritas3" autocomplete="off" :checked="items.prioritas.toLowerCase() === 'tinggi'" @click="updateStatusPengaduan('tinggi')">
-                                            <label class="btn btn-outline-danger" for="btnradioPrioritas3">
-                                                <div v-if="changeStatusLoading && currentStatus.toLowerCase() === 'tinggi'" class="spinner-border spinner-border-sm" role="status">
-                                                    <span class="visually-hidden">Loading...</span>
-                                                </div>
-                                                 <i v-else class="bi bi-3-circle-fill"></i>
-                                            <br>Tinggi</label>
-                                        </div>
-                                    </div><br>
-                                    <div class="alert p-0 m-0 w-50 mx-auto text-center" :class="{
-                                        'bg-primary text-white': items.prioritas.toLowerCase() === 'rendah',
-                                        'bg-warning': items.prioritas.toLowerCase() === 'sedang',
-                                        'bg-danger text-white': items.prioritas.toLowerCase() === 'tinggi',
-                                    }">
-                                        <ProgressBar mode="indeterminate" style="height: 4px" v-if="changeStatusLoading"></ProgressBar>
-                                        
-                                        <h3 class="m-0 fade-in-worker-single" v-else>
-                                            <i>{{ items.prioritas }}</i>
-                                        </h3>
-                                    </div> 
-                                    <!-- <hr class="mt-3"> -->
-                                    <!-- <small class="text-muted" style="font-size:12px;">#note: pilih diantara 3 pilihan tersebut untuk merubah status</small> -->
-                                </div>
-
-                                <div class="col-sm-6">
-                                </div>
-
-
-                            </div> <!-- div row -->
-
-                            <hr class="mt-3">
-                        
                             <div class="row">
                                 <div class="col-sm-5">
                                     <h3 class="card-title">Update Status <span> | <b>{{ items.status_pelaporan }}</b> current status</span></h3>
@@ -491,6 +435,66 @@
                                         </li>
                                     </ul><!-- End List group With Icons -->
                                 </div>
+                            </div> <!-- div row -->
+
+                            <hr class="mt-3">
+
+                            <div class="row">
+                                <div class="col-sm-7">
+                                    <h3 class="card-title">Update Prioritas <span> | <b>{{ items.prioritas }}</b> current prioritas</span></h3>
+                                </div> 
+                                <div class="col-sm-5 pt-md-2 pb-3">
+                                
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-sm-6">
+                                    <div class="col-sm-12 d-flex justify-content-center align-items-center">
+                                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                            <input v-if="!changePrioritasLoading" type="radio" class="btn-check" name="btnradioPrioritas" id="btnradioPrioritas1" autocomplete="off" :checked="items.prioritas.toLowerCase() === 'rendah'" @click="updatePrioritasPengaduan('rendah')">
+                                            <label class="btn btn-outline-primary" for="btnradioPrioritas1"> 
+                                                <div v-if="changePrioritasLoading && currentPrioritas.toLowerCase() === 'rendah'" class="spinner-border spinner-border-sm" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                <i v-else class="bi bi-1-circle-fill"></i>
+                                            <br>Rendah</label>
+
+                                            <input v-if="!changePrioritasLoading" type="radio" class="btn-check" name="btnradioPrioritas" id="btnradioPrioritas2" autocomplete="off" :checked="items.prioritas.toLowerCase() === 'sedang'" @click="updatePrioritasPengaduan('sedang')">
+                                            <label class="btn btn-outline-warning" for="btnradioPrioritas2">
+                                                <div v-if="changePrioritasLoading && currentPrioritas.toLowerCase() === 'sedang'" class="spinner-border spinner-border-sm" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                 <i v-else class="bi bi-2-circle-fill"></i>
+                                            <br>Sedang</label>
+
+                                            <input v-if="!changePrioritasLoading" type="radio" class="btn-check" name="btnradioPrioritas" id="btnradioPrioritas3" autocomplete="off" :checked="items.prioritas.toLowerCase() === 'tinggi'" @click="updatePrioritasPengaduan('tinggi')">
+                                            <label class="btn btn-outline-danger" for="btnradioPrioritas3">
+                                                <div v-if="changePrioritasLoading && currentPrioritas.toLowerCase() === 'tinggi'" class="spinner-border spinner-border-sm" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                 <i v-else class="bi bi-3-circle-fill"></i>
+                                            <br>Tinggi</label>
+                                        </div>
+                                    </div><br>
+                                    <div class="alert p-0 m-0 w-50 mx-auto text-center" :class="{
+                                        'bg-primary text-white': items.prioritas.toLowerCase() === 'rendah',
+                                        'bg-warning': items.prioritas.toLowerCase() === 'sedang',
+                                        'bg-danger text-white': items.prioritas.toLowerCase() === 'tinggi',
+                                    }">
+                                        <ProgressBar mode="indeterminate" style="height: 4px" v-if="changePrioritasLoading"></ProgressBar>
+                                        
+                                        <h3 class="m-0 fade-in-worker-single" v-else>
+                                            <i>{{ items.prioritas }}</i>
+                                        </h3>
+                                    </div> 
+                                    <!-- <hr class="mt-3"> -->
+                                    <!-- <small class="text-muted" style="font-size:12px;">#note: pilih diantara 3 pilihan tersebut untuk merubah status</small> -->
+                                </div>
+
+                                <div class="col-sm-6">
+                                </div>
 
 
                             </div> <!-- div row -->
@@ -541,7 +545,9 @@ export default {
 
             activeTab: '', // Inisialisasi variabel activeTab
             changeStatusLoading: false,
-            currentStatus: ''  //untuk loading spinner
+            changePrioritasLoading: false,
+            currentStatus: '',  //untuk loading status
+            currentPrioritas: '', //untuk loading prioritas
         }
     },
     created() {
@@ -584,6 +590,7 @@ export default {
                 this.items = response.data.data;
                 this.loadingAddWorker = false;
                 this.changeStatusLoading = false;
+                this.changePrioritasLoading = false;
 
             } catch (error) {
                 if (error.response && error.response.status == 401) {
@@ -649,6 +656,39 @@ export default {
             }finally{
                 this.fetchData();
             }
+        },
+
+        async updatePrioritasPengaduan(prioritasNya){
+
+            try {
+                this.changePrioritasLoading = true;
+                this.currentPrioritas = prioritasNya;
+                const response = await axios.put(`${this.baseUrl}/api/update_prioritas_pengaduan/${this.idPengaduan}`, { prioritas: prioritasNya.toLowerCase() }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.token}`,
+                    },
+                });
+                
+                this.Toasttt('Successfully', 'success', 'Prioritas Pengaduan Successfully Changed')
+                return response;
+            } catch (error) {
+                this.errorMessages = [];
+                if(error.response.data.message && error.response.status == 400){
+                    for (let field in error.response.data.message) { //list error 400
+                    this.errorMessages.push(...error.response.data.message[field]);
+                    }
+                }
+                if (error.response && error.response.status == 500 || error.response.status == 501) {
+                    this.Toasttt('Oops. Something Wrong.', 'error');
+                    this.$router.push('/pengaduan');
+                }
+                console.log(error.response.data.message)
+                this.changePrioritasLoading = false;
+            }finally{
+                this.fetchData();
+            }
+            
         },
 
         handleSubmitWorker() { //handle worker
@@ -843,6 +883,48 @@ export default {
                 }
                 console.error(error.response.data.message);
             }
+        },
+
+        async DeletePicture(idPicture){
+       
+            this.$swal({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        this.loadingAddWorker = true
+                        const response = await axios.delete(`${this.baseUrl}/api/del_picture/${idPicture}`, {
+                            headers: {
+                                'Authorization': `Bearer ${this.token}`,
+                            },
+                        });
+
+                        this.$swal({
+                            title: "Deleted!",
+                            text: "Your file has been deleted.",
+                            icon: "success"
+                        });
+
+                        this.errorMessages = [];
+                        this.fetchData();
+                        return response;
+                    } catch (error) {
+                        if (error.response && error.response.status === 400) {
+                            this.errorMessages = [];
+                            for (let field in error.response.data.message) {
+                                this.errorMessages.push(...error.response.data.message[field]);
+                            }
+                        }
+                        console.error(error.response.data.message);
+                    }
+                }
+            });
         },
 
         clearErrorMessages() { //clear error maessage kalo close alert
