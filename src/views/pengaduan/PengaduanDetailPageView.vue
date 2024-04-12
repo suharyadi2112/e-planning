@@ -349,14 +349,29 @@
                                 <div class="col-sm-6">
                                     <div class="col-sm-12 d-flex justify-content-center align-items-center">
                                         <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'waiting'" @click="updateStatusPengaduan('waiting')">
-                                            <label class="btn btn-outline-secondary" for="btnradio1"><i class="bi bi-cart-plus"></i> <br>Waiting</label>
+                                            <input v-if="!changeStatusLoading" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'waiting'" @click="updateStatusPengaduan('waiting')">
+                                            <label class="btn btn-outline-secondary" for="btnradio1"> 
+                                                <div v-if="changeStatusLoading && currentStatus.toLowerCase() === 'waiting'" class="spinner-border spinner-border-sm" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                <i v-else class="bi bi-cart-plus"></i> 
+                                            <br>Waiting</label>
 
-                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'progress'" @click="updateStatusPengaduan('progress')">
-                                            <label class="btn btn-outline-warning" for="btnradio2"><i class="bi bi-hourglass-split"></i> <br>Progress</label>
+                                            <input v-if="!changeStatusLoading" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'progress'" @click="updateStatusPengaduan('progress')">
+                                            <label class="btn btn-outline-warning" for="btnradio2">
+                                                <div v-if="changeStatusLoading && currentStatus.toLowerCase() === 'progress'" class="spinner-border spinner-border-sm" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                <i v-else class="bi bi-hourglass-split"></i> 
+                                            <br>Progress</label>
 
-                                            <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'done'" @click="updateStatusPengaduan('done')">
-                                            <label class="btn btn-outline-success" for="btnradio3"><i class="bi bi-check-lg"></i> <br>Done</label>
+                                            <input v-if="!changeStatusLoading" type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'done'" @click="updateStatusPengaduan('done')">
+                                            <label class="btn btn-outline-success" for="btnradio3">
+                                                <div v-if="changeStatusLoading && currentStatus.toLowerCase() === 'done'" class="spinner-border spinner-border-sm" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                <i v-else class="bi bi-check-lg"></i> 
+                                            <br>Done</label>
                                         </div>
                                     </div><br>
                                     <div class="alert p-0 m-0 w-50 mx-auto text-center" :class="{
@@ -461,6 +476,7 @@ export default {
 
             activeTab: '', // Inisialisasi variabel activeTab
             changeStatusLoading: false,
+            currentStatus: ''  //untuk loading spinner
         }
     },
     created() {
@@ -539,9 +555,10 @@ export default {
             }
         },
 
-        async updateStatusPengaduan(statusNya){
+        async updateStatusPengaduan(statusNya){ 
             try {
                 this.changeStatusLoading = true;
+                this.currentStatus = statusNya;
                 const response = await axios.put(`${this.baseUrl}/api/update_status_pengaduan/${this.idPengaduan}`, { status_pelaporan: statusNya }, {
                     headers: {
                         'Content-Type': 'application/json',
@@ -550,7 +567,6 @@ export default {
                 });
                 
                 this.Toasttt('Successfully', 'success', 'Status Pengaduan Successfully Changed')
-                this.fetchData();
                 return response;
             } catch (error) {
                 this.errorMessages = [];
@@ -565,6 +581,8 @@ export default {
                 }
                 console.log(error.response.data.message)
                 this.changeStatusLoading = false;
+            }finally{
+                this.fetchData();
             }
         },
 
