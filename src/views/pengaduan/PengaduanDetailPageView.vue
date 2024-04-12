@@ -87,7 +87,7 @@
                   <button @click="navigateToAssignToOverview('picture-post')" class="nav-link" :class="{ 'active': activeTab === 'picture-post' }" data-bs-toggle="tab" data-bs-target="#picture-post" aria-selected="true" role="tab"><i class="bi bi-image-alt"></i> Picture Post</button></li>
 
                 <li class="nav-item" role="pengaduanTab">
-                  <button @click="navigateToAssignToOverview('update-status')" class="nav-link bg-warning text-black" :class="{ 'active': activeTab === 'update-status' }" data-bs-toggle="tab" data-bs-target="#update-status" aria-selected="true" role="tab"><i class="bi bi-patch-question-fill"></i> <b>Update Status</b></button></li>
+                  <button @click="navigateToAssignToOverview('update-status')" class="nav-link bg-warning text-black" :class="{ 'active': activeTab === 'update-status' }" data-bs-toggle="tab" data-bs-target="#update-status" aria-selected="true" role="tab"><i class="bi bi-patch-question-fill"></i> <b>Status & Prioritas</b></button></li>
               </ul>
             
               <div class="tab-content pt-2">
@@ -320,9 +320,9 @@
                         </template>
                     </div>
 
-                    <!-- UPDATE STATUS -->
+                    <!-- UPDATE STATUS & PRIORITAS -->
                     <div class="tab-pane fade-in-worker-single update-status" :class="{ 'active': activeTab === 'update-status' }" id="update-status" role="tabpanel">
-
+                        
                         <div class="col-12" v-if="errorMessages.length > 0">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <li v-for="(errorMessage, index) in errorMessages" :key="index"><i class="bi bi-exclamation-circle"></i> {{ errorMessage }}</li>
@@ -330,19 +330,84 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-sm-5">
-                                 <h3 class="card-title">Update Status <span> | <b>{{ items.status_pelaporan }}</b> current status</span></h3>
-                            </div> 
-                            <div class="col-sm-7 pt-md-2 pb-3">
-                               
-                            </div>
-                        </div>
+                        
                         <div v-if="loadingAddWorker" class="d-flex justify-content-center text-primary m-3">
                             <strong role="status" class="pt-1" style="padding-right: 2rem;">Loading...</strong>
                             <div class="spinner-border shadow" aria-hidden="true"></div>
                         </div>
+                        
                         <template v-else> 
+
+                            <div class="row">
+                                <div class="col-sm-5">
+                                    <h3 class="card-title">Update Prioritas <span> | <b>{{ items.prioritas }}</b> current prioritas</span></h3>
+                                </div> 
+                                <div class="col-sm-7 pt-md-2 pb-3">
+                                
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-sm-6">
+                                    <div class="col-sm-12 d-flex justify-content-center align-items-center">
+                                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                            <input v-if="!changeStatusLoading" type="radio" class="btn-check" name="btnradio" id="btnradioPrioritas1" autocomplete="off" :checked="items.prioritas.toLowerCase() === 'rendah'" @click="updateStatusPengaduan('rendah')">
+                                            <label class="btn btn-outline-primary" for="btnradioPrioritas1"> 
+                                                <div v-if="changeStatusLoading && currentStatus.toLowerCase() === 'rendah'" class="spinner-border spinner-border-sm" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                <i v-else class="bi bi-1-circle-fill"></i>
+                                            <br>Rendah</label>
+
+                                            <input v-if="!changeStatusLoading" type="radio" class="btn-check" name="btnradio" id="btnradioPrioritas2" autocomplete="off" :checked="items.prioritas.toLowerCase() === 'sedang'" @click="updateStatusPengaduan('sedang')">
+                                            <label class="btn btn-outline-warning" for="btnradioPrioritas2">
+                                                <div v-if="changeStatusLoading && currentStatus.toLowerCase() === 'sedang'" class="spinner-border spinner-border-sm" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                 <i v-else class="bi bi-2-circle-fill"></i>
+                                            <br>Sedang</label>
+
+                                            <input v-if="!changeStatusLoading" type="radio" class="btn-check" name="btnradio" id="btnradioPrioritas3" autocomplete="off" :checked="items.prioritas.toLowerCase() === 'tinggi'" @click="updateStatusPengaduan('tinggi')">
+                                            <label class="btn btn-outline-danger" for="btnradioPrioritas3">
+                                                <div v-if="changeStatusLoading && currentStatus.toLowerCase() === 'tinggi'" class="spinner-border spinner-border-sm" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                 <i v-else class="bi bi-3-circle-fill"></i>
+                                            <br>Tinggi</label>
+                                        </div>
+                                    </div><br>
+                                    <div class="alert p-0 m-0 w-50 mx-auto text-center" :class="{
+                                        'bg-primary text-white': items.prioritas.toLowerCase() === 'rendah',
+                                        'bg-warning': items.prioritas.toLowerCase() === 'sedang',
+                                        'bg-danger text-white': items.prioritas.toLowerCase() === 'tinggi',
+                                    }">
+                                        <ProgressBar mode="indeterminate" style="height: 4px" v-if="changeStatusLoading"></ProgressBar>
+                                        
+                                        <h3 class="m-0 fade-in-worker-single" v-else>
+                                            <i>{{ items.prioritas }}</i>
+                                        </h3>
+                                    </div> 
+                                    <!-- <hr class="mt-3"> -->
+                                    <!-- <small class="text-muted" style="font-size:12px;">#note: pilih diantara 3 pilihan tersebut untuk merubah status</small> -->
+                                </div>
+
+                                <div class="col-sm-6">
+                                </div>
+
+
+                            </div> <!-- div row -->
+
+                            <hr class="mt-3">
+                        
+                            <div class="row">
+                                <div class="col-sm-5">
+                                    <h3 class="card-title">Update Status <span> | <b>{{ items.status_pelaporan }}</b> current status</span></h3>
+                                </div> 
+                                <div class="col-sm-7 pt-md-2 pb-3">
+                                
+                                </div>
+                            </div>
                             <!-- List group With Icons -->
                             <div class="row">
 
@@ -385,8 +450,8 @@
                                             <i>{{ items.status_pelaporan }}</i>
                                         </h3>
                                     </div> 
-                                    <hr class="mt-3">
-                                    <small class="text-muted" style="font-size:12px;">#note: pilih diantara 3 pilihan tersebut untuk merubah status</small>
+                                    <!-- <hr class="mt-3"> -->
+                                    <!-- <small class="text-muted" style="font-size:12px;">#note: pilih diantara 3 pilihan tersebut untuk merubah status</small> -->
                                 </div>
 
                                 <div class="col-sm-6">
