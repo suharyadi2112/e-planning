@@ -54,47 +54,48 @@
                 <div class="row g-6 bg-secondary pt-2 m-2 rounded collapse" id="collapseAdvanceSearch">
                   <div class="col-sm">
                       <label class="visually-hidden" for="specificSizeSelect">Preference</label>
-                      <select class="form-select mb-2"  v-model="pelaporaAS" id="specificSizeSelect" name="pelapor">
-                        <option value=""  selected>Pelapor...</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                      <select class="form-select mb-2" v-model="pelaporaAS" id="specificSizeSelect" name="pelapor">
+                        <option value="" selected>Pelapor...</option>
+                        <option v-for="(pelapor, index) in itemsAddional.pelaporList" :key="index" :value="index">
+                            {{ pelapor ? pelapor.charAt(0).toUpperCase() + pelapor.slice(1) : '-' }}
+                        </option>
                       </select>
+                      
                   </div>
                   <div class="col-sm">
                     <label class="visually-hidden" for="specificSizeSelect">Preference</label>
                       <select class="form-select mb-2"  v-model="lantaiAS" id="specificSizeSelect">
                         <option value="" selected>Lantai...</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        <option v-for="(lantai, index) in itemsAddional.lantaiList" :key="index" :value="index">
+                            {{ lantai ? lantai.charAt(0).toUpperCase() + lantai.slice(1) : '-' }}
+                        </option>
                       </select>
                   </div>
                   <div class="col-sm">
                     <label class="visually-hidden" for="specificSizeSelect">Preference</label>
                       <select class="form-select mb-2"  v-model="kategoriAS" id="specificSizeSelect">
                         <option value="" selected>Kategori...</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        <option v-for="(kategori, index) in itemsAddional.kategoriList" :key="index" :value="index">
+                            {{ kategori ? kategori.charAt(0).toUpperCase() + kategori.slice(1) : '-' }}
+                        </option>
                       </select>
                   </div>
                   <div class="col-sm">
                     <label class="visually-hidden" for="specificSizeSelect">Preference</label>
                       <select class="form-select mb-2"  v-model="prioritasAS" id="specificSizeSelect">
                         <option value="" selected>Prioritas...</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        <option v-for="(prioritas, index) in itemsAddional.prioritasList" :key="index" :value="index">
+                            {{ prioritas ? prioritas.charAt(0).toUpperCase() + prioritas.slice(1) : '-' }}
+                        </option>
                       </select>
                   </div>
                   <div class="col-sm">
                     <label class="visually-hidden" for="specificSizeSelect">Preference</label>
                       <select class="form-select mb-2"  v-model="statusAS" id="specificSizeSelect">
                         <option value="" selected>Status...</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        <option v-for="(status, index) in itemsAddional.statusPelaporan" :key="index" :value="index">
+                            {{ status ? status.charAt(0).toUpperCase() + status.slice(1) : '-' }}
+                        </option>
                       </select>
                   </div>
                   <div class="col-auto">
@@ -140,7 +141,9 @@
                                 </span>
                             </router-link>
                         </td>
-                        <td nowrap=""  width="10px;" style="text-align: center;" >{{ item.pelapor.name }}</td>
+                        <td nowrap=""  width="10px;" style="text-align: center;" >
+                          {{ item.pelapor && item.pelapor.name ? item.pelapor.name.charAt(0).toUpperCase() + item.pelapor.name.slice(1) : '-' }}
+                        </td>
                       
                         <td style="text-align: justify; width:20%;" @click="toggleExpandName(item.id)">
                           <span v-if="!expandedName.includes(item.id)">
@@ -227,6 +230,7 @@ export default {
   data() {
     return {
       items: [],
+      itemsAddional: [],
       currentPage: 1,
       totalPages: 0,
       searchQuery: '',
@@ -260,7 +264,7 @@ export default {
     }
   },
   mounted() {
-    this.fetchData();
+    this.fetchBothDashboard();
   },
   computed: {
     startEntry() {
@@ -274,6 +278,19 @@ export default {
     },
   },
   methods: {
+    async fetchBothDashboard() {
+        try {
+            // Menjalankan kedua metode fetch async secara paralel
+            await Promise.all([
+                this.fetchData(),
+                this.fetchDataAdditonal(),
+            ]);
+            
+        } catch (error) {
+            alert("server error")
+            console.error('Error:', error);
+        }
+    },
     async fetchData() {
       try {
         this.loading = true; //loading fetch
@@ -355,6 +372,30 @@ export default {
     },
     refreshData(){
       this.fetchData();
+    },
+
+    async fetchDataAdditonal() {
+        try {
+            const response = await axios(`${this.baseUrl}/api/get_additional_info`, {
+                headers: {
+                    Authorization: `Bearer ${this.token}`
+                },
+            })
+
+            this.itemsAddional = response.data.data;
+
+        } catch (error) {
+            if (error.response && error.response.status == 401) {
+                this.Toasttt('Unauthorized. You do not have access.', 'warning');
+                this.$router.push('/login');
+            }
+
+            if (error.response && error.response.status == 500 || error.response.status == 501) {
+                this.Toasttt('Oops. Something Wrong.', 'error');
+                this.$router.push('/pengaduan');
+            }
+            console.error("Terjadi kesalahan:", error);
+        }
     },
 
     //detail
