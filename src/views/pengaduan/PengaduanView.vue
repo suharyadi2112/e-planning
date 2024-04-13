@@ -54,8 +54,8 @@
                 <div class="row g-6 bg-secondary pt-2 m-2 rounded collapse" id="collapseAdvanceSearch">
                   <div class="col-sm">
                       <label class="visually-hidden" for="specificSizeSelect">Preference</label>
-                      <select class="form-select mb-2" id="specificSizeSelect">
-                        <option selected>Pelapor...</option>
+                      <select class="form-select mb-2"  v-model="pelaporaAS" id="specificSizeSelect" name="pelapor">
+                        <option value=""  selected>Pelapor...</option>
                         <option value="1">One</option>
                         <option value="2">Two</option>
                         <option value="3">Three</option>
@@ -63,8 +63,8 @@
                   </div>
                   <div class="col-sm">
                     <label class="visually-hidden" for="specificSizeSelect">Preference</label>
-                      <select class="form-select mb-2" id="specificSizeSelect">
-                        <option selected>Lantai...</option>
+                      <select class="form-select mb-2"  v-model="lantaiAS" id="specificSizeSelect">
+                        <option value="" selected>Lantai...</option>
                         <option value="1">One</option>
                         <option value="2">Two</option>
                         <option value="3">Three</option>
@@ -72,8 +72,8 @@
                   </div>
                   <div class="col-sm">
                     <label class="visually-hidden" for="specificSizeSelect">Preference</label>
-                      <select class="form-select mb-2" id="specificSizeSelect">
-                        <option selected>Kategori...</option>
+                      <select class="form-select mb-2"  v-model="kategoriAS" id="specificSizeSelect">
+                        <option value="" selected>Kategori...</option>
                         <option value="1">One</option>
                         <option value="2">Two</option>
                         <option value="3">Three</option>
@@ -81,8 +81,8 @@
                   </div>
                   <div class="col-sm">
                     <label class="visually-hidden" for="specificSizeSelect">Preference</label>
-                      <select class="form-select mb-2" id="specificSizeSelect">
-                        <option selected>Prioritas...</option>
+                      <select class="form-select mb-2"  v-model="prioritasAS" id="specificSizeSelect">
+                        <option value="" selected>Prioritas...</option>
                         <option value="1">One</option>
                         <option value="2">Two</option>
                         <option value="3">Three</option>
@@ -90,8 +90,8 @@
                   </div>
                   <div class="col-sm">
                     <label class="visually-hidden" for="specificSizeSelect">Preference</label>
-                      <select class="form-select mb-2" id="specificSizeSelect">
-                        <option selected>Status...</option>
+                      <select class="form-select mb-2"  v-model="statusAS" id="specificSizeSelect">
+                        <option value="" selected>Status...</option>
                         <option value="1">One</option>
                         <option value="2">Two</option>
                         <option value="3">Three</option>
@@ -243,6 +243,13 @@ export default {
       OpenUpdateKatPengBtn : false,
       FetchUpdateData : false,
 
+      // advance search
+      pelaporaAS: '',
+      lantaiAS: '',
+      kategoriAS: '',
+      prioritasAS: '',
+      statusAS: '',
+      
       FormDataUpdate : {}, //data for update
       LoadKatpeng: true,
 
@@ -279,6 +286,12 @@ export default {
             page: this.currentPage,
             search: this.searchQuery,
             per_page: this.selectedEntries,
+            //advance search
+            pelapor: this.pelaporaAS,
+            lantai: this.lantaiAS,
+            kategori: this.kategoriAS,
+            prioritas: this.prioritasAS,
+            status: this.statusAS,
           },
         });
 
