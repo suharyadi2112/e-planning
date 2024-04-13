@@ -26,7 +26,7 @@
               </div>
               <!-- table -->
                 <div class="row">
-                  <div class="col-6 mb-0 pb-0 pt-2">
+                  <div class="col-5 mb-0 pb-0 pt-2">
                     <div class="dropdown">
                       <button class="btn btn-primary dropdown-toggle btn-sm shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Entries
@@ -38,15 +38,71 @@
                       </ul>
                     </div>
                   </div>
-                  <div class="col-6 GridSearchBox">
+                  <div class="col-7 GridSearchBox">
                     <form class="row p-0" @submit.prevent="searchData">
                       <div class="input-group mb-3 Search ms-auto searchBox">
                         <input type="text" v-model="searchQuery" class="form-control shadow-sm" placeholder="judul pengaduan" aria-label="search" aria-describedby="button-addon2">
-                        <button class="btn btn-outline-primary shadow-sm searchBoxText" type="submit" id="button-addon2"><i class="bi bi-search"></i> search</button>
+                        <button class="btn btn-outline-primary shadow-sm searchBoxText" type="submit" id="button-addon2"><i class="bi bi-search"></i></button>
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanceSearch" aria-expanded="false" aria-controls="collapseAdvanceSearch">
+                          <i class="bi bi-three-dots"></i>
+                        </button>
                       </div>
                     </form>
                   </div>
                 </div>
+                <!-- multi search -->
+                <div class="row g-6 bg-secondary pt-2 m-2 rounded collapse" id="collapseAdvanceSearch">
+                  <div class="col-sm">
+                      <label class="visually-hidden" for="specificSizeSelect">Preference</label>
+                      <select class="form-select mb-2" id="specificSizeSelect">
+                        <option selected>Pelapor...</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                  </div>
+                  <div class="col-sm">
+                    <label class="visually-hidden" for="specificSizeSelect">Preference</label>
+                      <select class="form-select mb-2" id="specificSizeSelect">
+                        <option selected>Lantai...</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                  </div>
+                  <div class="col-sm">
+                    <label class="visually-hidden" for="specificSizeSelect">Preference</label>
+                      <select class="form-select mb-2" id="specificSizeSelect">
+                        <option selected>Kategori...</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                  </div>
+                  <div class="col-sm">
+                    <label class="visually-hidden" for="specificSizeSelect">Preference</label>
+                      <select class="form-select mb-2" id="specificSizeSelect">
+                        <option selected>Prioritas...</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                  </div>
+                  <div class="col-sm">
+                    <label class="visually-hidden" for="specificSizeSelect">Preference</label>
+                      <select class="form-select mb-2" id="specificSizeSelect">
+                        <option selected>Status...</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                  </div>
+                  <div class="col-auto">
+                    <button type="submit" class="btn btn-outline-light"><i class="bi bi-search"></i> Search</button>
+                  </div>
+                  
+                </div>
+                
                 <div class="table-responsive">
                   <table class="table table-hover table-bordered shadow-sm caption-top table-sm">
                     <caption class="pb-2 pt-0">List pengaduan</caption>
