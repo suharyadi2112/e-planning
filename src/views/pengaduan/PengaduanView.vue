@@ -26,7 +26,7 @@
               </div>
               <!-- table -->
                 <div class="row">
-                  <div class="col-6 mb-0 pb-0 pt-2">
+                  <div class="col-4 mb-0 pb-0 pt-2">
                     <div class="dropdown">
                       <button class="btn btn-primary dropdown-toggle btn-sm shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Entries
@@ -38,7 +38,7 @@
                       </ul>
                     </div>
                   </div>
-                  <div class="col-6 GridSearchBox">
+                  <div class="col-8 GridSearchBox">
                     <form class="row p-0" @submit.prevent="searchData">
                       <div class="input-group mb-3 Search ms-auto searchBox">
                         <input type="text" v-model="searchQuery" class="form-control shadow-sm form-control-sm" placeholder="judul pengaduan" aria-label="search" aria-describedby="button-addon2">
@@ -46,6 +46,7 @@
                         <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanceSearch" aria-expanded="false" aria-controls="collapseAdvanceSearch">
                           <i class="bi bi-three-dots"></i>
                         </button>
+                         <button type="button" class="btn btn-warning btn-sm" @click="resetSearchParams"><i class="bi bi-recycle"></i> Reset all</button>
                       </div>
                     </form>
                   </div>
@@ -95,7 +96,9 @@
                       </select>
                   </div>
                   <div class="col-auto">
-                    <button type="submit" class="btn btn-outline-light btn-sm" @click="searchDataAddtional"><i class="bi bi-search"></i> Search</button>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                      <button type="submit" class="btn btn-outline-light btn-sm" @click="searchDataAddtional"><i class="bi bi-search"></i> Search</button>
+                    </div>
                   </div>
                   </div>
                 </div>
@@ -197,7 +200,7 @@
                         <li class="page-item shadow-sm" :class="{ 'disabled': currentPage === 1 }">
                           <a class="page-link" href="#" @click.prevent="prevPage">Previous</a>
                         </li>
-                        <li class="page-item shadow-sm" v-for="page in totalPages" :key="page" :class="{ 'active': currentPage === page }">
+                        <li class="page-item shadow-sm" v-for="page in totalPages" :key="page" :class="{ 'active': currentPage == page }">
                           <a class="page-link shadow-sm" href="#" @click.prevent="setPage(page)">{{ page }}</a>
                         </li>
                         <li class="page-item shadow-sm" :class="{ 'disabled': currentPage === totalPages }">
@@ -260,9 +263,13 @@ export default {
     }
   },
   created() { //ambil param
-    const searchParams = ['pelaporaAS', 'lantaiAS', 'kategoriAS', 'prioritasAS', 'statusAS'];
+    const searchParams = ['pelaporaAS', 'lantaiAS', 'kategoriAS', 'prioritasAS', 'statusAS', 'searchQuery', 'currentPage'];
     searchParams.forEach(key => {
-        this[key] = sessionStorage.getItem(key) || '';
+        if (key === 'currentPage') {
+            this[key] = sessionStorage.getItem(key) || 1;
+        } else {
+            this[key] = sessionStorage.getItem(key) || '';
+        }
     });
   },
   mounted() {
@@ -347,11 +354,13 @@ export default {
       }
     },
     searchData() {
+      sessionStorage.setItem('searchQuery', this.searchQuery);
       this.currentPage = 1;
       this.fetchData();
     },
     prevPage() {
       if (this.currentPage > 1) {
+        sessionStorage.setItem('currentPage', this.currentPage);
         this.currentPage--;
         this.fetchData();
       }
@@ -359,16 +368,19 @@ export default {
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.currentPage++;
+        sessionStorage.setItem('currentPage', this.currentPage);
         this.fetchData();
       }
     },
     setPage(page) {
       this.currentPage = page;
+      sessionStorage.setItem('currentPage', this.currentPage);
       this.fetchData();
     },
     changeEntries(option) {
       this.currentPage = 1;// ulangi currentpage, jika pilihan change entries
       this.selectedEntries = option;
+      sessionStorage.setItem('currentPage', this.currentPage);
       this.fetchData();
     },
     refreshData(){
@@ -392,6 +404,23 @@ export default {
       } catch (error) {
         console.error(error,"error additional");
       }
+    },
+
+    resetSearchParams() {
+        const searchParamsReset = ['pelaporaAS', 'lantaiAS', 'kategoriAS', 'prioritasAS', 'statusAS','searchQuery', 'currentPage'];
+        searchParamsReset.forEach(key => {
+            sessionStorage.removeItem(key);
+        });
+        searchParamsReset.forEach(key => {
+            this[key] = '';
+            if (key === 'currentPage') {
+              this[key] = sessionStorage.getItem(key) || 1;
+            } else {
+              this[key] = sessionStorage.getItem(key) || '';
+            }
+        });
+     
+        this.fetchData();
     },
 
     async fetchDataAdditonal() {
