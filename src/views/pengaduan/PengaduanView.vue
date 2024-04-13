@@ -26,7 +26,7 @@
               </div>
               <!-- table -->
                 <div class="row">
-                  <div class="col-5 mb-0 pb-0 pt-2">
+                  <div class="col-6 mb-0 pb-0 pt-2">
                     <div class="dropdown">
                       <button class="btn btn-primary dropdown-toggle btn-sm shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Entries
@@ -38,12 +38,12 @@
                       </ul>
                     </div>
                   </div>
-                  <div class="col-7 GridSearchBox">
+                  <div class="col-6 GridSearchBox">
                     <form class="row p-0" @submit.prevent="searchData">
                       <div class="input-group mb-3 Search ms-auto searchBox">
-                        <input type="text" v-model="searchQuery" class="form-control shadow-sm" placeholder="judul pengaduan" aria-label="search" aria-describedby="button-addon2">
-                        <button class="btn btn-outline-primary shadow-sm searchBoxText" type="submit" id="button-addon2"><i class="bi bi-search"></i></button>
-                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanceSearch" aria-expanded="false" aria-controls="collapseAdvanceSearch">
+                        <input type="text" v-model="searchQuery" class="form-control shadow-sm form-control-sm" placeholder="judul pengaduan" aria-label="search" aria-describedby="button-addon2">
+                        <button class="btn btn-outline-primary shadow-sm searchBoxText btn-sm" type="submit" id="button-addon2"><i class="bi bi-search"></i></button>
+                        <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanceSearch" aria-expanded="false" aria-controls="collapseAdvanceSearch">
                           <i class="bi bi-three-dots"></i>
                         </button>
                       </div>
@@ -51,57 +51,53 @@
                   </div>
                 </div>
                 <!-- multi search -->
-                <div class="row g-6 bg-secondary pt-2 m-2 rounded collapse" id="collapseAdvanceSearch">
+                <div class="collapse" id="collapseAdvanceSearch">
+                <div class="row g-6 bg-secondary pt-2 m-2 rounded input-group-sm" >
                   <div class="col-sm">
-                      <label class="visually-hidden" for="specificSizeSelect">Preference</label>
-                      <select class="form-select mb-2" v-model="pelaporaAS" id="specificSizeSelect" name="pelapor">
+                      <select class="form-select mb-2 form-select-sm" v-model="pelaporaAS" id="specificSizeSelect" name="pelapor">
                         <option value="" selected>Pelapor...</option>
-                        <option v-for="(pelapor, index) in itemsAddional.pelaporList" :key="index" :value="index">
+                        <option v-for="(pelapor, index) in itemsAddional.pelaporList" :key="index" :value="index ? index : ''">
                             {{ pelapor ? pelapor.charAt(0).toUpperCase() + pelapor.slice(1) : '-' }}
                         </option>
                       </select>
                       
                   </div>
                   <div class="col-sm">
-                    <label class="visually-hidden" for="specificSizeSelect">Preference</label>
-                      <select class="form-select mb-2"  v-model="lantaiAS" id="specificSizeSelect">
+                      <select class="form-select mb-2 form-select-sm"  v-model="lantaiAS" id="specificSizeSelect">
                         <option value="" selected>Lantai...</option>
-                        <option v-for="(lantai, index) in itemsAddional.lantaiList" :key="index" :value="index">
+                        <option v-for="(lantai, index) in itemsAddional.lantaiList" :key="index" :value="lantai ? lantai : ''">
                             {{ lantai ? lantai.charAt(0).toUpperCase() + lantai.slice(1) : '-' }}
                         </option>
                       </select>
                   </div>
                   <div class="col-sm">
-                    <label class="visually-hidden" for="specificSizeSelect">Preference</label>
-                      <select class="form-select mb-2"  v-model="kategoriAS" id="specificSizeSelect">
+                      <select class="form-select mb-2 form-select-sm"  v-model="kategoriAS" id="specificSizeSelect">
                         <option value="" selected>Kategori...</option>
-                        <option v-for="(kategori, index) in itemsAddional.kategoriList" :key="index" :value="index">
+                        <option v-for="(kategori, index) in itemsAddional.kategoriList" :key="index" :value="index ? index : ''">
                             {{ kategori ? kategori.charAt(0).toUpperCase() + kategori.slice(1) : '-' }}
                         </option>
                       </select>
                   </div>
                   <div class="col-sm">
-                    <label class="visually-hidden" for="specificSizeSelect">Preference</label>
-                      <select class="form-select mb-2"  v-model="prioritasAS" id="specificSizeSelect">
+                      <select class="form-select mb-2 form-select-sm"  v-model="prioritasAS" id="specificSizeSelect">
                         <option value="" selected>Prioritas...</option>
-                        <option v-for="(prioritas, index) in itemsAddional.prioritasList" :key="index" :value="index">
+                        <option v-for="(prioritas, index) in itemsAddional.prioritasList" :key="index" :value="prioritas ? prioritas : ''">
                             {{ prioritas ? prioritas.charAt(0).toUpperCase() + prioritas.slice(1) : '-' }}
                         </option>
                       </select>
                   </div>
                   <div class="col-sm">
-                    <label class="visually-hidden" for="specificSizeSelect">Preference</label>
-                      <select class="form-select mb-2"  v-model="statusAS" id="specificSizeSelect">
+                      <select class="form-select mb-2 form-select-sm"  v-model="statusAS" id="specificSizeSelect">
                         <option value="" selected>Status...</option>
-                        <option v-for="(status, index) in itemsAddional.statusPelaporan" :key="index" :value="index">
+                        <option v-for="(status, index) in itemsAddional.statusPelaporan" :key="index" :value="status ? status : ''">
                             {{ status ? status.charAt(0).toUpperCase() + status.slice(1) : '-' }}
                         </option>
                       </select>
                   </div>
                   <div class="col-auto">
-                    <button type="submit" class="btn btn-outline-light"><i class="bi bi-search"></i> Search</button>
+                    <button type="submit" class="btn btn-outline-light btn-sm" @click="searchDataAddtional"><i class="bi bi-search"></i> Search</button>
                   </div>
-                  
+                  </div>
                 </div>
                 
                 <div class="table-responsive">
@@ -263,6 +259,12 @@ export default {
       expandedNameKode: [],//kode expand
     }
   },
+  created() { //ambil param
+    const searchParams = ['pelaporaAS', 'lantaiAS', 'kategoriAS', 'prioritasAS', 'statusAS'];
+    searchParams.forEach(key => {
+        this[key] = sessionStorage.getItem(key) || '';
+    });
+  },
   mounted() {
     this.fetchBothDashboard();
   },
@@ -294,7 +296,6 @@ export default {
     async fetchData() {
       try {
         this.loading = true; //loading fetch
-        // await new Promise(resolve => setTimeout(resolve, 1000));
         const response = await axios(`${this.baseUrl}/api/get_pengaduan/`, {
           headers: {
             Authorization: `Bearer ${this.token}`
@@ -304,11 +305,11 @@ export default {
             search: this.searchQuery,
             per_page: this.selectedEntries,
             //advance search
-            pelapor: this.pelaporaAS,
+            pelapor_id: this.pelaporaAS,
             lantai: this.lantaiAS,
-            kategori: this.kategoriAS,
+            kategori_pengaduan_id: this.kategoriAS,
             prioritas: this.prioritasAS,
-            status: this.statusAS,
+            status_pelaporan: this.statusAS,
           },
         });
 
@@ -372,6 +373,25 @@ export default {
     },
     refreshData(){
       this.fetchData();
+    },
+    
+    async searchDataAddtional() {//search additional
+      try {
+        const searchParams = {
+            pelaporaAS: this.pelaporaAS,
+            lantaiAS: this.lantaiAS,
+            kategoriAS: this.kategoriAS,
+            prioritasAS: this.prioritasAS,
+            statusAS: this.statusAS
+        };
+
+        Object.keys(searchParams).forEach(key => {
+            sessionStorage.setItem(key, searchParams[key]);
+        });
+        await this.fetchData();
+      } catch (error) {
+        console.error(error,"error additional");
+      }
     },
 
     async fetchDataAdditonal() {
