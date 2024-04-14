@@ -835,6 +835,11 @@ h6 {
   background: #ffecdf;
 }
 
+.lantai-card .card-icon {
+  color: #cf0707;
+  background: #f9cccc;
+}
+
 /* Activity */
 .activity {
   font-size: 14px;
