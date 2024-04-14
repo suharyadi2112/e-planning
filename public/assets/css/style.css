@@ -761,13 +761,13 @@ h6 {
 # Dashboard
 --------------------------------------------------------------*/
 /* Filter dropdown */
-.dashboard .filter {
+.filter {
   position: absolute;
   right: 0px;
   top: 15px;
 }
 
-.dashboard .filter .icon {
+.filter .icon {
   color: #aab7cf;
   padding-right: 20px;
   padding-bottom: 5px;
@@ -775,16 +775,16 @@ h6 {
   font-size: 16px;
 }
 
-.dashboard .filter .icon:hover,
-.dashboard .filter .icon:focus {
+.filter .icon:hover,
+.filter .icon:focus {
   color: #4154f1;
 }
 
-.dashboard .filter .dropdown-header {
+.filter .dropdown-header {
   padding: 8px 15px;
 }
 
-.dashboard .filter .dropdown-header h6 {
+.filter .dropdown-header h6 {
   text-transform: uppercase;
   font-size: 14px;
   font-weight: 600;
@@ -794,16 +794,16 @@ h6 {
   padding: 0;
 }
 
-.dashboard .filter .dropdown-item {
+.filter .dropdown-item {
   padding: 8px 15px;
 }
 
 /* Info Cards */
-.dashboard .info-card {
+.info-card {
   padding-bottom: 10px;
 }
 
-.dashboard .info-card h6 {
+.info-card h6 {
   font-size: 28px;
   color: #012970;
   font-weight: 700;
@@ -811,7 +811,7 @@ h6 {
   padding: 0;
 }
 
-.dashboard .card-icon {
+.card-icon {
   font-size: 32px;
   line-height: 0;
   width: 64px;
@@ -820,27 +820,27 @@ h6 {
   flex-grow: 0;
 }
 
-.dashboard .sales-card .card-icon {
+.sales-card .card-icon {
   color: #4154f1;
   background: #f6f6fe;
 }
 
-.dashboard .revenue-card .card-icon {
+.revenue-card .card-icon {
   color: #2eca6a;
   background: #e0f8e9;
 }
 
-.dashboard .customers-card .card-icon {
+.customers-card .card-icon {
   color: #ff771d;
   background: #ffecdf;
 }
 
 /* Activity */
-.dashboard .activity {
+.activity {
   font-size: 14px;
 }
 
-.dashboard .activity .activity-item .activite-label {
+.activity .activity-item .activite-label {
   color: #888;
   position: relative;
   flex-shrink: 0;
@@ -848,7 +848,7 @@ h6 {
   min-width: 64px;
 }
 
-.dashboard .activity .activity-item .activite-label::before {
+.activity .activity-item .activite-label::before {
   content: "";
   position: absolute;
   right: -11px;
@@ -858,7 +858,7 @@ h6 {
   background-color: #eceefe;
 }
 
-.dashboard .activity .activity-item .activity-badge {
+.activity .activity-item .activity-badge {
   margin-top: 3px;
   z-index: 1;
   font-size: 11px;
@@ -869,16 +869,16 @@ h6 {
   flex-grow: 0;
 }
 
-.dashboard .activity .activity-item .activity-content {
+.activity .activity-item .activity-content {
   padding-left: 10px;
   padding-bottom: 20px;
 }
 
-.dashboard .activity .activity-item:first-child .activite-label::before {
+.activity .activity-item:first-child .activite-label::before {
   top: 5px;
 }
 
-.dashboard .activity .activity-item:last-child .activity-content {
+.activity .activity-item:last-child .activity-content {
   padding-bottom: 0;
 }
 

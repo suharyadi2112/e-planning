@@ -258,82 +258,7 @@ export default {
 </script>
 
 <style scope>
-  
-  /* Filter dropdown */
-  .filter {
-    position: absolute;
-    right: 0px;
-    top: 15px;
-  }
 
-  .filter .icon {
-    color: #aab7cf;
-    padding-right: 20px;
-    padding-bottom: 5px;
-    transition: 0.3s;
-    font-size: 16px;
-  }
-
-  .filter .icon:hover,
-  .filter .icon:focus {
-    color: #4154f1;
-  }
-
-  .filter .dropdown-header {
-    padding: 8px 15px;
-  }
-
-  .filter .dropdown-header h6 {
-    text-transform: uppercase;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    color: #aab7cf;
-    margin-bottom: 0;
-    padding: 0;
-  }
-
-  .filter .dropdown-item {
-    padding: 8px 15px;
-  }
-
-  /* Info Cards */
-  .info-card {
-    padding-bottom: 10px;
-  }
-
-  .info-card h6 {
-    font-size: 28px;
-    color: #012970;
-    font-weight: 700;
-    margin: 0;
-    padding: 0;
-  }
-
-  
-  .card-icon {
-    font-size: 32px;
-    line-height: 0;
-    width: 64px;
-    height: 64px;
-    flex-shrink: 0;
-    flex-grow: 0;
-  }
-
-  .sales-card .card-icon {
-    color: #4154f1;
-    background: #f6f6fe;
-  }
-
-  .revenue-card .card-icon {
-    color: #2eca6a;
-    background: #e0f8e9;
-  }
-
-  .customers-card .card-icon {
-    color: #ff771d;
-    background: #ffecdf;
-  }
 
   .breadJa{
     margin-top: 10px;
@@ -345,54 +270,6 @@ export default {
   .fade-out-dashboard {
       animation: fadeOut 0.5s ease-out;
   }
-
-    /* Activity */
-  .activity {
-    font-size: 14px;
-  }
-
-  .activity .activity-item .activite-label {
-    color: #888;
-    position: relative;
-    flex-shrink: 0;
-    flex-grow: 0;
-    min-width: 64px;
-  }
-
-  .activity .activity-item .activite-label::before {
-    content: "";
-    position: absolute;
-    right: -11px;
-    width: 4px;
-    top: 0;
-    bottom: 0;
-    background-color: #eceefe;
-  }
-
-  .activity .activity-item .activity-badge {
-    margin-top: 3px;
-    z-index: 1;
-    font-size: 11px;
-    line-height: 0;
-    border-radius: 50%;
-    flex-shrink: 0;
-    border: 3px solid #fff;
-    flex-grow: 0;
-  }
-
-  .activity .activity-item .activity-content {
-    padding-left: 10px;
-    padding-bottom: 20px;
-  }
-
-  .activity .activity-item:first-child .activite-label::before {
-    top: 5px;
-  }
-
-  .activity .activity-item:last-child .activity-content {
-    padding-bottom: 0;
-  }
-
 
   @keyframes fadeIn {
       from {
