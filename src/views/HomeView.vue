@@ -34,7 +34,8 @@
                       <h6>
                         <span class="card-title text-muted small">
                         <vue3-autocounter ref='counter' :startAmount='0' :endAmount='itemsTotalPengaduan.previous_count' :duration='2' :autoinit='true' /> &nbsp;</span>
-                        <vue3-autocounter  class="fade-in-dashboard-home"  ref='counter' :startAmount='0' :endAmount='itemsTotalPengaduan.current_count' :duration='2  ' :autoinit='true' />
+                        <vue3-autocounter class="fade-in-dashboard-home" style="margin-right: 6px;"  ref='counter' :startAmount='0' :endAmount='itemsTotalPengaduan.current_count' :duration='2  ' :autoinit='true' />
+                        <span class="card-title text-muted small">Pengaduan</span>
                       </h6>
                       <span class="small pt-1 fw-bold" :class="{'text-success': itemsTotalPengaduan.increase_percentage >= 0, 'text-danger': itemsTotalPengaduan.increase_percentage < 0}">
                         <vue3-autocounter ref='counter' :startAmount='0' :endAmount='itemsTotalPengaduan.increase_percentage' suffix='%' :duration='2' :autoinit='true' />
@@ -103,7 +104,7 @@
 
             <!-- Kategori Card -->
             <div class="col-xxl-3 col-md-6">
-              <div class="card info-card revenue-card">
+              <div class="card info-card customers-card">
 
                 <div class="filter">
                   <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
@@ -134,7 +135,7 @@
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-sort-alpha-up"></i>
+                      <i class="bi bi-tags"></i>
                     </div>
                     <div class="ps-3">
                       <h6>
@@ -156,44 +157,64 @@
                 </div>
 
               </div>
-            </div><!-- End Revenue Card -->
+            </div><!-- End Kategoi Card -->
 
-            <!-- Customers Card -->
-            <div class="col-xxl-3 col-xl-12">
-
-              <div class="card info-card customers-card">
+            <!-- Lantai Card -->
+            <div class="col-xxl-3 col-md-6">
+              <div class="card info-card lantai-card">
 
                 <div class="filter">
                   <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                   <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                     <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
+                      <h6>Filter Interval</h6>
                     </li>
 
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                    <li><a class="dropdown-item" href="#" @click="totalLantaiInterval('today')">Today</a></li>
+                    <li><a class="dropdown-item" href="#" @click="totalLantaiInterval('month')">This Month</a></li>
+                    <li><a class="dropdown-item" href="#" @click="totalLantaiInterval('year')">This Year</a></li>
+                  </ul>
+
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filter Lantai</h6>
+                    </li>
+
+                    <li v-for="(lantainya, lantaiID) in itemsAddional.lantaiList" :key="lantaiID">
+                        <a class="dropdown-item" href="#" @click="totalLantai(lantainya)">{{ lantainya }}</a>
+                    </li>
                   </ul>
                 </div>
 
                 <div class="card-body">
-                  <h5 class="card-title">Customers <span>| This Year</span></h5>
+                  <h5 class="card-title">Lantai <span class="fade-in-dashboard-home">| {{ intervalLantai ? intervalLantai.charAt(0).toUpperCase() + intervalLantai.slice(1) : '-' }}</span></h5>
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-people"></i>
+                      <i class="bi bi-building-fill-up"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>1244</h6>
-                      <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
+                      <h6>
+                        <span class="card-title text-muted small">
+                        <vue3-autocounter ref='counter' :startAmount='0' :endAmount='itemsTotalLantai.previous_count' :duration='2' :autoinit='true' /> &nbsp;</span>
+                        <vue3-autocounter  class="fade-in-dashboard-home" style="margin-right: 6px;"  ref='counter' :startAmount='0' :endAmount='itemsTotalLantai.current_count' :duration='2  ' :autoinit='true' />
+                        
+                        <span class="card-title text-muted small fade-in-dashboard-home kategori-item" :data-tooltip="itemsTotalLantai.lantai">
+                            Lantai {{ itemsTotalLantai.lantai ? itemsTotalLantai.lantai.substring(0, 4) : '' }}{{ itemsTotalLantai.lantai && itemsTotalLantai.lantai.length > 4 ? '...' : '' }}
+                        </span>
+                       
+                      </h6>
+                      <span class="small pt-1 fw-bold" :class="{'text-success': itemsTotalLantai.increase_percentage >= 0, 'text-danger': itemsTotalLantai.increase_percentage < 0}">
+                        <vue3-autocounter ref='counter' :startAmount='0' :endAmount='itemsTotalLantai.increase_percentage' suffix='%' :duration='2' :autoinit='true' />
+                      </span> <span class="text-muted small pt-2 ps-1">increase</span>
 
                     </div>
                   </div>
-
                 </div>
-              </div>
 
-            </div><!-- End Customers Card -->
+              </div>
+            </div><!-- End Lantai Card -->
 
             <div class="col-xxl-6 col-xl-12">
               <div class="card">
@@ -260,11 +281,14 @@ export default defineComponent({
       itemsTotalPengaduan: {},
       itemsTotalPrioritas: {},
       itemsTotalKategori: {},
+      itemsTotalLantai: {},
       interval: 'month',
       intervalPrioritas: 'month',
       intervalKategori: 'month',
+      intervalLantai: 'month',
       prioritas: 'tinggi',
       kategori: '-',
+      lantai: '-',
       itemsAddional: {},
       baseUrl: process.env.BE_APP_BASE_URL,
       token: localStorage.getItem('tokenCallIT'),
@@ -302,12 +326,15 @@ export default defineComponent({
                   prioritas: this.prioritas,
                   kategori_id: this.kategori,
                   intervalKategori: this.intervalKategori,
+                  lantai: this.lantai,
+                  intervalLantai: this.intervalLantai,
                 },
             })
 
             this.itemsTotalPengaduan = response.data.data.totalPersenPengaduan;
             this.itemsTotalPrioritas = response.data.data.totalPersenPrioritas;
             this.itemsTotalKategori = response.data.data.totalPersenKategori;
+            this.itemsTotalLantai = response.data.data.totalPersenLantai;
 
         } catch (error) {
             if (error.response && error.response.status == 401) {
@@ -340,6 +367,14 @@ export default defineComponent({
     },
     totalKategori(katt){
       this.kategori = katt
+      this.fetchData()
+    },
+    totalLantaiInterval(intvlLan){
+      this.intervalLantai = intvlLan
+      this.fetchData()
+    },
+    totalLantai(lann){
+      this.lantai = lann
       this.fetchData()
     },
     
