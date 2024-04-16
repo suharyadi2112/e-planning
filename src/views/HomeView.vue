@@ -32,12 +32,12 @@
                     </div>
                     <div class="ps-4 fade-in-dashboard-home">
                       <h6>
-                        <span class="card-title text-muted small">
-                        <vue3-autocounter ref='counter' :startAmount='0' :endAmount='itemsTotalPengaduan.previous_count' :duration='2' :autoinit='true' /> &nbsp;</span>
                         <vue3-autocounter class="fade-in-dashboard-home" style="margin-right: 6px;"  ref='counter' :startAmount='0' :endAmount='itemsTotalPengaduan.current_count' :duration='2  ' :autoinit='true' />
                         <span class="card-title text-muted small">Pengaduan</span>
                       </h6>
                       <span class="small pt-1 fw-bold" :class="{'text-success': itemsTotalPengaduan.increase_percentage >= 0, 'text-danger': itemsTotalPengaduan.increase_percentage < 0}">
+                        <span class="card-title text-muted small">
+                          <vue3-autocounter ref='counter' :startAmount='0' :endAmount='itemsTotalPengaduan.previous_count' :duration='2' :autoinit='true' /> &nbsp;</span>
                         <vue3-autocounter ref='counter' :startAmount='0' :endAmount='itemsTotalPengaduan.increase_percentage' suffix='%' :duration='2' :autoinit='true' />
                       </span> <span class="text-muted small pt-2 ps-1">increase</span>
                     </div>
@@ -85,13 +85,12 @@
                     </div>
                     <div class="ps-3">
                       <h6>
-                        <span class="card-title text-muted small">
-                        <vue3-autocounter ref='counter' :startAmount='0' :endAmount='itemsTotalPrioritas.previous_count' :duration='2' :autoinit='true' /> &nbsp;</span>
-                       
                         <vue3-autocounter  class="fade-in-dashboard-home" style="margin-right: 6px;"  ref='counter' :startAmount='0' :endAmount='itemsTotalPrioritas.current_count' :duration='2  ' :autoinit='true' />
                         <span class="card-title text-muted small">{{ prioritas ? prioritas.charAt(0).toUpperCase() + prioritas.slice(1) : '-' }}</span>
                       </h6>
                       <span class="small pt-1 fw-bold" :class="{'text-success': itemsTotalPrioritas.increase_percentage >= 0, 'text-danger': itemsTotalPrioritas.increase_percentage < 0}">
+                        <span class="card-title text-muted small">
+                          <vue3-autocounter ref='counter' :startAmount='0' :endAmount='itemsTotalPrioritas.previous_count' :duration='2' :autoinit='true' /> &nbsp;</span>
                         <vue3-autocounter ref='counter' :startAmount='0' :endAmount='itemsTotalPrioritas.increase_percentage' suffix='%' :duration='2' :autoinit='true' />
                       </span> <span class="text-muted small pt-2 ps-1">increase</span>
 
@@ -139,8 +138,6 @@
                     </div>
                     <div class="ps-3">
                       <h6>
-                        <span class="card-title text-muted small">
-                        <vue3-autocounter ref='counter' :startAmount='0' :endAmount='itemsTotalKategori.previous_count' :duration='2' :autoinit='true' /> &nbsp;</span>
                         <vue3-autocounter  class="fade-in-dashboard-home" style="margin-right: 6px;"  ref='counter' :startAmount='0' :endAmount='itemsTotalKategori.current_count' :duration='2  ' :autoinit='true' />
                         
                         <span class="card-title text-muted small fade-in-dashboard-home kategori-item" :data-tooltip="itemsTotalKategori.kategori">
@@ -149,6 +146,8 @@
                        
                       </h6>
                       <span class="small pt-1 fw-bold" :class="{'text-success': itemsTotalKategori.increase_percentage >= 0, 'text-danger': itemsTotalKategori.increase_percentage < 0}">
+                      <span class="card-title text-muted small">
+                        <vue3-autocounter ref='counter' :startAmount='0' :endAmount='itemsTotalKategori.previous_count' :duration='2' :autoinit='true' /> &nbsp;</span>
                         <vue3-autocounter ref='counter' :startAmount='0' :endAmount='itemsTotalKategori.increase_percentage' suffix='%' :duration='2' :autoinit='true' />
                       </span> <span class="text-muted small pt-2 ps-1">increase</span>
 
@@ -196,8 +195,6 @@
                     </div>
                     <div class="ps-3">
                       <h6>
-                        <span class="card-title text-muted small">
-                        <vue3-autocounter ref='counter' :startAmount='0' :endAmount='itemsTotalLantai.previous_count' :duration='2' :autoinit='true' /> &nbsp;</span>
                         <vue3-autocounter  class="fade-in-dashboard-home" style="margin-right: 6px;"  ref='counter' :startAmount='0' :endAmount='itemsTotalLantai.current_count' :duration='2  ' :autoinit='true' />
                         
                         <span class="card-title text-muted small fade-in-dashboard-home kategori-item" :data-tooltip="itemsTotalLantai.lantai">
@@ -206,6 +203,8 @@
                        
                       </h6>
                       <span class="small pt-1 fw-bold" :class="{'text-success': itemsTotalLantai.increase_percentage >= 0, 'text-danger': itemsTotalLantai.increase_percentage < 0}">
+                      <span class="card-title text-muted small">
+                        <vue3-autocounter ref='counter' :startAmount='0' :endAmount='itemsTotalLantai.previous_count' :duration='2' :autoinit='true' /> &nbsp;</span>
                         <vue3-autocounter ref='counter' :startAmount='0' :endAmount='itemsTotalLantai.increase_percentage' suffix='%' :duration='2' :autoinit='true' />
                       </span> <span class="text-muted small pt-2 ps-1">increase</span>
 
@@ -215,46 +214,51 @@
 
               </div>
             </div><!-- End Lantai Card -->
-
+            
+            <!-- Actvity Card -->
             <div class="col-xxl-6 col-xl-12">
               <div class="card">
-                  <div class="filter">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                      <li class="dropdown-header text-start">
-                        <h6>Filter</h6>
-                      </li>
-
-                      <li><a class="dropdown-item" href="#">Today</a></li>
-                      <li><a class="dropdown-item" href="#">This Month</a></li>
-                      <li><a class="dropdown-item" href="#">This Year</a></li>
-                    </ul>
-                  </div>
-
                   <div class="card-body">
-                    <h5 class="card-title">Recent Activity <span>| Today</span></h5>
-
+                    <h5 class="card-title">Recent Pengaduan <span>| 10 Pengaduan terakhir</span></h5>
+                    <template v-if="!loadingHome">
+                        <div style="width:100%">
+                            <ProgressBar mode="indeterminate" style="height: 6px"></ProgressBar>
+                        </div>
+                    </template>
                     <div class="activity">
 
-                      <div class="activity-item d-flex">
-                        <div class="activite-label">32 min</div>
-                        <i class="bi bi-circle-fill activity-badge text-success align-self-start"></i>
-                        <div class="activity-content">
-                          Quia quae rerum <a href="#" class="fw-bold text-dark">explicabo officiis</a> beatae
-                        </div>
+                      <div class="activity-item d-flex" v-for="(activity, index) in itemsPengaduanAktivitas" :key="index">
+                        <div class="activite-label">{{ shortenTimeAktifitas(activity.lama_waktu) }}</div>
+                        <i class="bi bi-circle-fill activity-badge" :class="getBadgeColorAktivitasPengaduan(activity.prioritas)"></i>
+                        <div class="activity-content" style="text-align: justify">{{ activity.judul_pengaduan }}</div>
                       </div><!-- End activity item-->
+                      <br>
+                      <div class="activity-description" style="text-align: center">
+                        <span class="p-2" ><i class="bi bi-circle-fill activity-badge text-danger" ></i> Prioritas Tinggi</span>
+                        <span class="p-2" ><i class="bi bi-circle-fill activity-badge text-warning" ></i> Prioritas Sedang</span>
+                        <span class="p-2"><i class="bi bi-circle-fill activity-badge text-primary" ></i> Prioritas Rendah</span>
+                      </div>
 
-                      <div class="activity-item d-flex">
-                        <div class="activite-label">56 min</div>
-                        <i class="bi bi-circle-fill activity-badge text-danger align-self-start"></i>
-                        <div class="activity-content">
-                          Voluptatem blanditiis blanditiis eveniet
-                        </div>
-                      </div><!-- End activity item-->
                     </div>
                   </div>
-                </div>
-                
+              </div>
+            </div><!-- End Recent Activity -->
+
+            <!-- Workers Card -->
+            <div class="col-xxl-6 col-xl-12">
+              <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">Workers Jobs <span>| Workers dengan total jobs (Raja Terakhir)</span></h5>
+
+                    <div class="activity">
+                     
+                      <div id="chart">
+                        <apexchart type="line" height="350" :options="chartOptions" :series="series"></apexchart>
+                      </div>
+
+                    </div>
+                  </div>
+              </div>
             </div><!-- End Recent Activity -->
               
           </div>
@@ -270,10 +274,14 @@
 import axios from 'axios';
 import { defineComponent } from 'vue';
 import Vue3autocounter from 'vue3-autocounter';
+import { chartOptions } from './apexchartjs/charttoption.js';
+import 'primevue/resources/themes/bootstrap4-light-blue/theme.css'
+import ProgressBar from 'primevue/progressbar';
 
 export default defineComponent({
   name: 'DemoTes',
   components: {
+    ProgressBar,
     'vue3-autocounter': Vue3autocounter
   },
   data() {
@@ -282,6 +290,7 @@ export default defineComponent({
       itemsTotalPrioritas: {},
       itemsTotalKategori: {},
       itemsTotalLantai: {},
+      itemsPengaduanAktivitas: {},
       interval: 'month',
       intervalPrioritas: 'month',
       intervalKategori: 'month',
@@ -290,8 +299,14 @@ export default defineComponent({
       kategori: '-',
       lantai: '-',
       itemsAddional: {},
+
+      series: [], //untuk chart worker dan jumlah jobnya
+      chartOptions: chartOptions,
+      
       baseUrl: process.env.BE_APP_BASE_URL,
       token: localStorage.getItem('tokenCallIT'),
+      loadingHome: false,
+      
       
     }
   },
@@ -335,6 +350,10 @@ export default defineComponent({
             this.itemsTotalPrioritas = response.data.data.totalPersenPrioritas;
             this.itemsTotalKategori = response.data.data.totalPersenKategori;
             this.itemsTotalLantai = response.data.data.totalPersenLantai;
+            this.itemsPengaduanAktivitas = response.data.data.getPengaduanActivity;
+            this.updateSeriesWorkerWithTotalJobs(response.data.data.totalKerjaanPerBulan);
+
+            this.loadingHome = true;
 
         } catch (error) {
             if (error.response && error.response.status == 401) {
@@ -403,6 +422,43 @@ export default defineComponent({
         }
     },
 
+    getBadgeColorAktivitasPengaduan(prioritas) {
+        // Tentukan kelas warna berdasarkan prioritas
+        if (prioritas === 'Tinggi') {
+          return 'text-danger';
+        } else if (prioritas === 'Sedang') {
+          return 'text-warning';
+        } else {
+          return 'text-primary';
+        }
+    },
+    shortenTimeAktifitas(time) {
+      return time
+        .replace('tahun', 'yr')
+        .replace('bulan', 'bln')
+        .replace('hari', 'hr')
+        .replace('jam', 'jam');
+    },
+    // handle string to array number series apexchart workers with total jobs
+    updateSeriesWorkerWithTotalJobs(newData) {
+      this.series = [];
+
+      newData.forEach(item => {
+        this.series.push({
+          name: item.name,
+          data: item.totalKerjaan.split(',').map(Number),
+          color: this.getRandomColor() // Add a random color
+        });
+      });
+    },
+    getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    },
 
   },
 });
