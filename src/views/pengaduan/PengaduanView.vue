@@ -154,7 +154,11 @@
                         </td>
 
                         <td nowrap=""  width="5px;" style="text-align: center;" >{{ item.lantai }}</td>
-                        <td nowrap=""  width="10px;" style="text-align: center;" >{{ item.kategoripengaduan.nama }}</td>
+                        <td nowrap=""  width="10px;" style="text-align: center;" >
+                        
+                          {{ item.kategoripengaduan ? item.kategoripengaduan.nama : '-' }}
+                          
+                        </td>
 
                         <td nowrap="" width="10px;" style="text-align: center;">
                             <span style="width:60px;" :class="{'badge bg-danger': item.prioritas.toLowerCase() === 'tinggi', 'badge bg-warning': item.prioritas.toLowerCase() === 'sedang', 'badge bg-primary': item.prioritas.toLowerCase() !== 'tinggi' && item.prioritas.toLowerCase() !== 'sedang'}">{{ item.prioritas.toLowerCase() }}</span>

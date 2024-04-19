@@ -123,8 +123,10 @@
                       <h6>Filter Kategori</h6>
                     </li>
 
-                    <li v-for="(kategori, kategoriId) in itemsAddional.kategoriList" :key="kategoriId">
-                        <a class="dropdown-item" href="#" @click="totalKategori(kategoriId)">{{ kategori }}</a>
+                    <li v-for="(kategori, kategoriId) in itemsAddional.kategoriList" :key="kategoriId" >
+                        <template v-if="kategori">
+                          <a class="dropdown-item" href="#" @click="totalKategori(kategoriId)">{{ kategori }}</a>
+                        </template>
                     </li>
                   </ul>
                 </div>
@@ -215,8 +217,44 @@
               </div>
             </div><!-- End Lantai Card -->
             
+            <!-- Workers Card -->
+            <div class="col-xxl-8 col-xl-12">
+              <div class="card">
+
+                  <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                      <li class="dropdown-header text-start">
+                        <h6>Filter Tahun</h6>
+                      </li>
+
+                      <li><a class="dropdown-item" href="#" @click="workerJobInterval('2026')">2026</a></li>
+                      <li><a class="dropdown-item" href="#" @click="workerJobInterval('2025')">2025</a></li>
+                      <li><a class="dropdown-item" href="#" @click="workerJobInterval('2024')">2024</a></li>
+                      <li><a class="dropdown-item" href="#" @click="workerJobInterval('2023')">2023</a></li>
+                    </ul>
+                  </div>
+              
+                  <div class="card-body">
+                    <h5 class="card-title">Workers Jobs <span>| Workers dengan total jobs {{ tahunJobWorkers }}</span></h5>
+                    <template v-if="!loadingHome">
+                        <div style="width:100%">
+                            <ProgressBar mode="indeterminate" style="height: 6px"></ProgressBar>
+                        </div>
+                    </template>
+                    <div class="activity fade-in-dashboard-home" v-else>
+                     
+                      <div id="chart">
+                        <apexchart type="line" height="393" :options="chartOptions" :series="series"></apexchart>
+                      </div>
+
+                    </div>
+                  </div>
+              </div>
+            </div><!-- End Wokrer Card -->
+            
             <!-- Actvity Card -->
-            <div class="col-xxl-6 col-xl-12">
+            <div class="col-xxl-4 col-xl-12">
               <div class="card">
                   <div class="card-body">
                     <h5 class="card-title">Recent Pengaduan <span>| 10 Pengaduan terakhir</span></h5>
@@ -225,7 +263,7 @@
                             <ProgressBar mode="indeterminate" style="height: 6px"></ProgressBar>
                         </div>
                     </template>
-                    <div class="activity">
+                    <div class="activity scrollable-div fade-in-dashboard-home" v-else>
 
                       <div class="activity-item d-flex" v-for="(activity, index) in itemsPengaduanAktivitas" :key="index">
                         <div class="activite-label">{{ shortenTimeAktifitas(activity.lama_waktu) }}</div>
@@ -233,33 +271,18 @@
                         <div class="activity-content" style="text-align: justify">{{ activity.judul_pengaduan }}</div>
                       </div><!-- End activity item-->
                       <br>
-                      <div class="activity-description" style="text-align: center">
-                        <span class="p-2" ><i class="bi bi-circle-fill activity-badge text-danger" ></i> Prioritas Tinggi</span>
-                        <span class="p-2" ><i class="bi bi-circle-fill activity-badge text-warning" ></i> Prioritas Sedang</span>
-                        <span class="p-2"><i class="bi bi-circle-fill activity-badge text-primary" ></i> Prioritas Rendah</span>
-                      </div>
-
                     </div>
+                     <div class="activity-description pt-4" style="text-align: center; font-size: 12px;">
+                        <span class="p-2" ><i class="bi bi-circle-fill activity-badge text-danger" ></i> Tinggi</span>
+                        <span class="p-2" ><i class="bi bi-circle-fill activity-badge text-warning" ></i> Sedang</span>
+                        <span class="p-2"><i class="bi bi-circle-fill activity-badge text-primary" ></i> Rendah</span>
+                        <span class="p-2"><i class="bi bi-circle-fill activity-badge text-secondary" ></i> TBA</span>
+                      </div>
                   </div>
               </div>
             </div><!-- End Recent Activity -->
 
-            <!-- Workers Card -->
-            <div class="col-xxl-6 col-xl-12">
-              <div class="card">
-                  <div class="card-body">
-                    <h5 class="card-title">Workers Jobs <span>| Workers dengan total jobs (Raja Terakhir)</span></h5>
 
-                    <div class="activity">
-                     
-                      <div id="chart">
-                        <apexchart type="line" height="350" :options="chartOptions" :series="series"></apexchart>
-                      </div>
-
-                    </div>
-                  </div>
-              </div>
-            </div><!-- End Recent Activity -->
               
           </div>
         </div>
@@ -298,13 +321,17 @@ export default defineComponent({
       prioritas: 'tinggi',
       kategori: '-',
       lantai: '-',
+      tahunJobWorkers : '-',
+      tahunTotalLantai : '-',
+      bulanTotalLantai : '-',
       itemsAddional: {},
 
       series: [], //untuk chart worker dan jumlah jobnya
       chartOptions: chartOptions,
-      
+     
       baseUrl: process.env.BE_APP_BASE_URL,
       token: localStorage.getItem('tokenCallIT'),
+      infoIDLogin: localStorage.getItem('userInfoId'),
       loadingHome: false,
       
       
@@ -320,7 +347,7 @@ export default defineComponent({
         try {
             await Promise.all([
               this.fetchData(),
-              this.fetchDataAdditonal()
+              this.fetchDataAdditonal(),
             ]);
             
         } catch (error) {
@@ -343,6 +370,9 @@ export default defineComponent({
                   intervalKategori: this.intervalKategori,
                   lantai: this.lantai,
                   intervalLantai: this.intervalLantai,
+                  tahunJobWorker: this.tahunJobWorkers,
+                  tahunTotalLantai: this.tahunTotalLantai,
+                  bulanTotalLantai: this.bulanTotalLantai,
                 },
             })
 
@@ -396,6 +426,10 @@ export default defineComponent({
       this.lantai = lann
       this.fetchData()
     },
+    workerJobInterval(intvl){
+      this.tahunJobWorkers = intvl
+      this.fetchData()
+    },
     
 
     async fetchDataAdditonal() {
@@ -424,12 +458,14 @@ export default defineComponent({
 
     getBadgeColorAktivitasPengaduan(prioritas) {
         // Tentukan kelas warna berdasarkan prioritas
-        if (prioritas === 'Tinggi') {
+        if (prioritas.toLowerCase() === 'tinggi') {
           return 'text-danger';
-        } else if (prioritas === 'Sedang') {
+        } else if (prioritas.toLowerCase() === 'sedang') {
           return 'text-warning';
-        } else {
+        } else if (prioritas.toLowerCase() === 'rendah') {
           return 'text-primary';
+        } else {
+          return 'text-secondary';
         }
     },
     shortenTimeAktifitas(time) {
@@ -458,6 +494,26 @@ export default defineComponent({
         color += letters[Math.floor(Math.random() * 16)];
       }
       return color;
+    },
+    
+    Toasttt(msg, type, detail){
+      const Toast = this.$swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          background: "#F8F8F8",
+          didOpen: (toast) => {
+              toast.onmouseenter = this.$swal.stopTimer;
+              toast.onmouseleave = this.$swal.resumeTimer;
+          }
+      });
+          Toast.fire({
+          icon: type,
+          title: msg,
+          text: detail,
+      });
     },
 
   },
@@ -517,5 +573,14 @@ export default defineComponent({
 
   .kategori-item:hover::after {
       opacity: 1; /* Tampilkan tooltip saat elemen dihover */
+  }
+
+  .scrollable-div {
+    height: 365px; /* Atur tinggi sesuai kebutuhan */
+    overflow: auto; /* Atur overflow menjadi auto untuk menampilkan scrollbar hanya jika diperlukan */
+  }
+  .scrollable-div::-webkit-scrollbar {
+    width: 0; /* Atur lebar scrollbar menjadi 0 untuk menyembunyikannya */
+    height: 0; /* Atur tinggi scrollbar menjadi 0 untuk menyembunyikannya */
   }
 </style>

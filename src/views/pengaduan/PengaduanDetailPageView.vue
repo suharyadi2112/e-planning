@@ -76,17 +76,21 @@
             <div class="card-body pt-3">
               <!-- Bordered Tabs -->
               <ul v-if="ProfileOne" class="nav nav-tabs nav-tabs-bordered fade-in-worker-single" role="tablist">
+                
+                <li class="nav-item" role="pengaduanTab">
+                  <button @click="navigateToAssignToOverview('chat-tab')" class="nav-link" :class="{ 'active': activeTab === 'chat-tab' }" data-bs-toggle="tab" data-bs-target="#chat-tab" aria-selected="true" role="tab"><i class="bi bi-chat-dots-fill"></i> Chat</button></li>
+
                 <li class="nav-item" role="pengaduanTab">
                   <button @click="navigateToAssignToOverview('profile-overview')" class="nav-link" :class="{ 'active': activeTab === 'profile-overview' }" data-bs-toggle="tab" data-bs-target="#profile-overview" aria-selected="true" role="tab"><i class="bi bi-eye"></i> Overview</button></li>
 
                 <li class="nav-item" role="pengaduanTab">
-                  <button @click="navigateToAssignToOverview('assign-to-overview')" class="nav-link" :class="{ 'active': activeTab === 'assign-to-overview' }" data-bs-toggle="tab" data-bs-target="#assign-to-overview" aria-selected="true" role="tab"><i class="bi bi-people-fill"></i> Assign To</button></li>
+                  <button @click="navigateToAssignToOverview('assign-to-overview')" class="nav-link" :class="{ 'active': activeTab === 'assign-to-overview' }" data-bs-toggle="tab" data-bs-target="#assign-to-overview" aria-selected="true" role="tab"><i class="bi bi-people-fill"></i> Assign</button></li>
 
                 <li class="nav-item" role="pengaduanTab">
-                  <button @click="navigateToAssignToOverview('picture-pre')" class="nav-link" :class="{ 'active': activeTab === 'picture-pre' }" data-bs-toggle="tab" data-bs-target="#picture-pre" aria-selected="true" role="tab"><i class="bi bi-images"></i> Picture Pre</button></li>
+                  <button @click="navigateToAssignToOverview('picture-pre')" class="nav-link" :class="{ 'active': activeTab === 'picture-pre' }" data-bs-toggle="tab" data-bs-target="#picture-pre" aria-selected="true" role="tab"><i class="bi bi-images"></i> Pre</button></li>
 
                 <li class="nav-item" role="pengaduanTab">
-                  <button @click="navigateToAssignToOverview('picture-post')" class="nav-link" :class="{ 'active': activeTab === 'picture-post' }" data-bs-toggle="tab" data-bs-target="#picture-post" aria-selected="true" role="tab"><i class="bi bi-image-alt"></i> Picture Post</button></li>
+                  <button @click="navigateToAssignToOverview('picture-post')" class="nav-link" :class="{ 'active': activeTab === 'picture-post' }" data-bs-toggle="tab" data-bs-target="#picture-post" aria-selected="true" role="tab"><i class="bi bi-image-alt"></i> Post</button></li>
 
                 <li class="nav-item" role="pengaduanTab">
                   <button @click="navigateToAssignToOverview('update-status')" class="nav-link bg-warning text-black" :class="{ 'active': activeTab === 'update-status' }" data-bs-toggle="tab" data-bs-target="#update-status" aria-selected="true" role="tab"><i class="bi bi-patch-question-fill"></i> <b>Status & Prioritas</b></button></li>
@@ -326,120 +330,11 @@
                         </template>
                     </div>
 
+
                     <!-- UPDATE STATUS & PRIORITAS -->
                     <div class="tab-pane fade-in-worker-single update-status" :class="{ 'active': activeTab === 'update-status' }" id="update-status" role="tabpanel">
-                        
-                        <div class="col-12" v-if="errorMessages.length > 0">
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <li v-for="(errorMessage, index) in errorMessages" :key="index"><i class="bi bi-exclamation-circle"></i> {{ errorMessage }}</li>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="clearErrorMessages"></button>
-                            </div>
-                        </div>
 
-                        
-                        <div v-if="loadingAddWorker" class="d-flex justify-content-center text-primary m-3">
-                            <strong role="status" class="pt-1" style="padding-right: 2rem;">Loading...</strong>
-                            <div class="spinner-border shadow" aria-hidden="true"></div>
-                        </div>
-                        
-                        <template v-else> 
-
-                            <div class="row">
-                                <div class="col-sm-5">
-                                    <h3 class="card-title">Update Status <span> | <b>{{ items.status_pelaporan }}</b> current status</span></h3>
-                                </div> 
-                                <div class="col-sm-7 pt-md-2 pb-3">
-                                
-                                </div>
-                            </div>
-                            <!-- List group With Icons -->
-                            <div class="row">
-
-                                <div class="col-sm-6">
-                                    <div class="col-sm-12 d-flex justify-content-center align-items-center">
-                                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                            <input v-if="!changeStatusLoading" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'waiting'" @click="updateStatusPengaduan('waiting')">
-                                            <label class="btn btn-outline-secondary" for="btnradio1"> 
-                                                <div v-if="changeStatusLoading && currentStatus.toLowerCase() === 'waiting'" class="spinner-border spinner-border-sm" role="status">
-                                                    <span class="visually-hidden">Loading...</span>
-                                                </div>
-                                                <i v-else class="bi bi-cart-plus"></i> 
-                                            <br>Waiting</label>
-
-                                            <input v-if="!changeStatusLoading" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'progress'" @click="updateStatusPengaduan('progress')">
-                                            <label class="btn btn-outline-warning" for="btnradio2">
-                                                <div v-if="changeStatusLoading && currentStatus.toLowerCase() === 'progress'" class="spinner-border spinner-border-sm" role="status">
-                                                    <span class="visually-hidden">Loading...</span>
-                                                </div>
-                                                <i v-else class="bi bi-hourglass-split"></i> 
-                                            <br>Progress</label>
-
-                                            <input v-if="!changeStatusLoading" type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" :checked="items.status_pelaporan.toLowerCase() === 'done'" @click="updateStatusPengaduan('done')">
-                                            <label class="btn btn-outline-success" for="btnradio3">
-                                                <div v-if="changeStatusLoading && currentStatus.toLowerCase() === 'done'" class="spinner-border spinner-border-sm" role="status">
-                                                    <span class="visually-hidden">Loading...</span>
-                                                </div>
-                                                <i v-else class="bi bi-check-lg"></i> 
-                                            <br>Done</label>
-                                        </div>
-                                    </div><br>
-                                    <div class="alert p-0 m-0 w-50 mx-auto text-center" :class="{
-                                        'bg-secondary text-white': items.status_pelaporan.toLowerCase() === 'waiting',
-                                        'bg-warning': items.status_pelaporan.toLowerCase() === 'progress',
-                                        'bg-success text-white': items.status_pelaporan.toLowerCase() === 'done',
-                                    }">
-                                        <ProgressBar mode="indeterminate" style="height: 4px" v-if="changeStatusLoading"></ProgressBar>
-                                        
-                                        <h3 class="m-0 fade-in-worker-single" v-else>
-                                            <i>{{ items.status_pelaporan }}</i>
-                                        </h3>
-                                    </div> 
-                                    <!-- <hr class="mt-3"> -->
-                                    <!-- <small class="text-muted" style="font-size:12px;">#note: pilih diantara 3 pilihan tersebut untuk merubah status</small> -->
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <ul class="list-group">
-                                        <li class="list-group-item">
-                                            <i class="bi bi-people-fill me-1 text-primary"></i> Workers 
-                                            <span class="badge" :class="{ 'bg-success': items.workers.length > 0, 'bg-danger': items.workers.length === 0 }" style="float: right; ">
-                                                 <span v-if="items.workers.length === 0">
-                                                    <i class="bi bi-hourglass-split"></i> Incomplete
-                                                </span>
-                                                <span v-else>
-                                                    <i class="bi bi-check-lg"></i> Done
-                                                </span>
-                                            </span>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <i class="bi bi-images me-1 text-primary"></i> Picture Pre 
-                                            <span class="badge" :class="{ 'bg-success': items.detailpengaduan.filter(detail => detail.tipe === 'pre').length > 0, 'bg-danger': items.detailpengaduan.filter(detail => detail.tipe === 'pre').length === 0 }" style="float: right; ">
-                                                <span v-if="items.detailpengaduan.filter(detail => detail.tipe === 'pre').length === 0">
-                                                    <i class="bi bi-hourglass-split"></i> Incomplete
-                                                </span>
-                                                <span v-else>
-                                                    <i class="bi bi-check-lg"></i> Done
-                                                </span>
-                                            </span>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <i class="bi bi-images me-1 text-primary"></i> Picture Post
-                                            <span class="badge" :class="{ 'bg-success': items.detailpengaduan.filter(detail => detail.tipe === 'post').length > 0, 'bg-danger': items.detailpengaduan.filter(detail => detail.tipe === 'post').length === 0 }" style="float: right; ">
-                                                <span v-if="items.detailpengaduan.filter(detail => detail.tipe === 'post').length === 0">
-                                                    <i class="bi bi-hourglass-split"></i> Incomplete
-                                                </span>
-                                                <span v-else>
-                                                    <i class="bi bi-check-lg"></i> Done
-                                                </span>
-                                            </span>
-                                        </li>
-                                    </ul><!-- End List group With Icons -->
-                                </div>
-                            </div> <!-- div row -->
-
-                            <hr class="mt-3">
-
-                            <div class="row">
+                        <div class="row">
                                 <div class="col-sm-7">
                                     <h3 class="card-title">Update Prioritas <span> | <b>{{ items.prioritas }}</b> current prioritas</span></h3>
                                 </div> 
@@ -499,8 +394,74 @@
 
                             </div> <!-- div row -->
 
+                    </div>
+
+                    <!-- CHAT TAB -->
+                    <div class="tab-pane fade-in-worker-single chat-tab" :class="{ 'active': activeTab === 'chat-tab' }" id="chat-tab" role="tabpanel">
+                        
+                        <div class="col-12" v-if="errorMessages.length > 0">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <li v-for="(errorMessage, index) in errorMessages" :key="index"><i class="bi bi-exclamation-circle"></i> {{ errorMessage }}</li>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="clearErrorMessages"></button>
+                            </div>
+                        </div>
+
+                        
+                        <div v-if="loadingAddWorker" class="d-flex justify-content-center text-primary m-3">
+                            <strong role="status" class="pt-1" style="padding-right: 2rem;">Loading...</strong>
+                            <div class="spinner-border shadow" aria-hidden="true"></div>
+                        </div>
+                        
+                        <template v-else> 
+
+                            <div class="row">
+                                <div class="col-sm-5">
+                                    <h3 class="card-title">Chat with worker <span> | <b>-</b> -</span></h3>
+                                </div> 
+                                <div class="col-sm-7 pt-md-2 pb-3">
+                                
+                                </div>
+                            </div>
+                            <!-- List group With Icons -->
+                            <div class="row">
+
+                                <div class="col-sm-12">
+                                    <div class="card direct-chat direct-chat-primary">
+                                        <div class="direct-chat-messages">
+                                            <div class="direct-chat-msg" :class="{'right': chat.sender_id == infoIDLogin }"  v-for="(chat, chatId) in itemChat" :key="chatId">
+                                                <div class="direct-chat-infos clearfix">
+                                                <span class="direct-chat-name" style="float: left;">Alexander Pierce</span>
+                                                <span class="direct-chat-timestamp"  style="float: right;">23 Jan 2:00 pm</span>
+                                                </div>
+
+                                                <img class="direct-chat-img" src="https://picsum.photos/200/300" alt="message user image">
+
+                                                <div class="direct-chat-text">
+                                                {{ chat.message_content }}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <form @submit.prevent="submitChat">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" v-model="formData.message_content" placeholder="Masukan bacotannya" aria-label="Kirim pesan" aria-describedby="button-addon2">
+                                                    <button class="btn btn-outline-secondary" type="button" id="button-addon2">Button</button>
+                                                
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                           
+
                         </template>
                     </div>
+
+                        
+
 
                 </template>
 
@@ -539,6 +500,7 @@ export default {
             },
             baseUrl: process.env.BE_APP_BASE_URL,
             token: localStorage.getItem('tokenCallIT'),
+            infoIDLogin: localStorage.getItem('userInfoId'),
             idPengaduan : null,
             ProfileOne : false,
             errorMessages: {}, //error serverside
@@ -548,6 +510,11 @@ export default {
             changePrioritasLoading: false,
             currentStatus: '',  //untuk loading status
             currentPrioritas: '', //untuk loading prioritas
+
+            itemChat: {},
+            formDataChat:{
+                message_content : '',
+            },
         }
     },
     created() {
@@ -569,6 +536,7 @@ export default {
                 await Promise.all([
                     this.fetchData(),
                     this.fetchWorkers(),
+                    this.fetchDataChat(),
                 ]);
 
                 this.ProfileOne = true;
@@ -929,6 +897,74 @@ export default {
 
         clearErrorMessages() { //clear error maessage kalo close alert
             this.errorMessages = [];
+        },
+
+
+        submitChat() { //chat submit
+            //validation
+            const requiredFields = ['message_content'];
+            requiredFields.forEach(field => { 
+                if (!this.formData[field]) {
+                    console.log(this.formData[field], "cek isi form chat")
+                }else{
+                    alert('chat harus ada isi !')
+                }
+            });
+            const hasErrors = requiredFields.some(field => this.error[field]);
+            if (!hasErrors) {
+                this.sendStoreChat();
+            }
+        },
+
+        async fetchDataChat() { //data chat
+            try {
+                const response = await axios(`${this.baseUrl}/api/chat_history_list_by_pengadua_id/${this.idPengaduan}`, {
+                    // ${this.idPengaduan}
+                    headers: {
+                        Authorization: `Bearer ${this.token}`
+                    },
+                })
+
+                this.itemChat = response.data.data;
+                this.loadingHome = true;
+
+            } catch (error) {
+                if (error.response && error.response.status == 401) {
+                    this.Toasttt('Unauthorized. You do not have access.', 'warning');
+                    this.$router.push('/login');
+                }
+
+                if (error.response && error.response.status == 500 || error.response.status == 501) {
+                    this.Toasttt('Oops. Something Wrong.', 'error');
+                    this.$router.push('/pengaduan');
+                }
+                console.error("Terjadi kesalahan:", error);
+            }
+        },
+
+        //store form data chat
+        async sendStoreChat() {
+            try {
+                const response = await axios.post(`${this.baseUrl}/api/send_one_message`, this.formData, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.token}`,
+                    },
+                });
+
+                return response
+
+            } catch (error) {
+                if(error.response.data.message && error.response.status == 400){
+                this.errorMessages = [];
+                for (let field in error.response.data.message) { //list error 400
+                    this.errorMessages.push(...error.response.data.message[field]);
+                }
+                }
+                console.log(error.response.data.message)
+            } finally { 
+                this.loadingSubmitPengaduan = false
+            }
         },
 
         Toasttt(msg, type, detail){
