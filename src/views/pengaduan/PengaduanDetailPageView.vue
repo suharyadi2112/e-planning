@@ -427,31 +427,47 @@
 
                                 <div class="col-sm-12">
                                     <div class="card direct-chat direct-chat-primary">
-                                        <div class="direct-chat-messages">
-                                            <div class="direct-chat-msg" :class="{'right': chat.sender_id == infoIDLogin }"  v-for="(chat, chatId) in itemChat" :key="chatId">
+                                        <div class="direct-chat-messages" ref="chatMessages">
+                                        
+                                            <template v-if="LoadingChat">
+                                                <div style="width:100%">
+                                                    <ProgressBar mode="indeterminate" style="height: 6px"></ProgressBar>
+                                                </div>
+                                            </template>
+                                            <div class="text-center" v-if="itemChat.roomReady == false && !LoadingChat">
+                                                <div class="alert alert-primary" role="alert">
+                                                    Click <b>Mulai Chat</b> untuk memulai percakapan <i class="bi bi-flag"></i>
+                                                </div>
+                                            </div>
+                                            <div v-else class="direct-chat-msg fade-in-chatT" :class="{'right': chat.sender_id == infoIDLogin }"  v-for="(chat, chatId) in itemChat.resultChat" :key="chatId">
                                                 <div class="direct-chat-infos clearfix">
                                                 <span class="direct-chat-name" style="float: left;">Alexander Pierce</span>
                                                 <span class="direct-chat-timestamp"  style="float: right;">23 Jan 2:00 pm</span>
                                                 </div>
-
+                                               
                                                 <img class="direct-chat-img" src="https://picsum.photos/200/300" alt="message user image">
-
-                                                <div class="direct-chat-text">
-                                                {{ chat.message_content }}
+                                                <div class="direct-chat-text fade-in-chatT">
+                                                    {{ chat.message_content }}
                                                 </div>
 
                                             </div>
                                         </div>
                                         <div class="card-footer">
                                             <form @submit.prevent="submitChat">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control" v-model="formData.message_content" placeholder="Masukan bacotannya" aria-label="Kirim pesan" aria-describedby="button-addon2">
-                                                    <button class="btn btn-outline-secondary" type="button" id="button-addon2">Button</button>
-                                                
+                                                <div class="input-group fade-in-chatT">
+                                                    <input type="text" class="form-control" :readonly="itemChat.roomReady === false" :disabled="itemChat.roomReady === false" v-model="formDataChat.message_content" name="message_content" placeholder="Masukan bacotannya" aria-label="Kirim pesan" aria-describedby="button-addon2" >
+
+                                                    <button v-if="itemChat.roomReady == true" class="btn btn-primary" style="float: right;" type="submit" :disabled="loadingSubmitChat">
+                                                        <span v-if="!loadingSubmitChat"><i class="bi bi-send"></i> Send</span>
+                                                        <span v-else>
+                                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                        <label> Send</label>
+                                                        </span>
+                                                    </button>
+                                                    <button v-if="itemChat.roomReady == false" @click="startChat" type="button" class="btn btn-success btn-block"><i class="bi bi-flag"></i> Mulai Chat</button> 
                                                 </div>
                                             </form>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -477,9 +493,10 @@
 
 <script>
 import axios from 'axios';
-import 'primevue/resources/themes/bootstrap4-light-blue/theme.css'
+import 'primevue/resources/themes/bootstrap4-light-blue/theme.css';
 import ProgressBar from 'primevue/progressbar';
-import VueMultiselect from 'vue-multiselect'
+import VueMultiselect from 'vue-multiselect';
+import Pusher from 'pusher-js';
 
 export default {
     components: {
@@ -514,10 +531,38 @@ export default {
             itemChat: {},
             formDataChat:{
                 message_content : '',
+                roomID : '',
             },
+            LoadingChat: false,
+            loadingSubmitChat: false,
         }
     },
     created() {
+
+        // --- pusher --- //
+        const pusher = new Pusher('9ede8272955f9628c5d9', {
+            cluster: 'ap1',
+            encrypted: true
+        });
+
+        Pusher.logToConsole = true; //matikan di prod
+
+        const channel = pusher.subscribe('callit-geng');
+
+        channel.bind('callit-geng-event', data => {
+            if (data.message.roomID == this.itemChat.roomID) {
+                const infoIDLoginInt = parseInt(this.infoIDLogin); //parse ke integer
+                if (data.message.members.includes(infoIDLoginInt)) {
+                    this.fetchDataChat()
+                } else {
+                    console.log('You are not authorized to view this message.');
+                }
+            }else{
+                console.log('You are not join on this room.');
+            }
+        });
+        
+        // --- tab --- //
         const tab = this.$route.query.tab;
         if (tab) {
             this.activeTab = tab;
@@ -899,20 +944,32 @@ export default {
             this.errorMessages = [];
         },
 
+        startChat() { //chat start
+            this.startChatCreateRoom(this.idPengaduan);
+        },
 
-        submitChat() { //chat submit
-            //validation
-            const requiredFields = ['message_content'];
-            requiredFields.forEach(field => { 
-                if (!this.formData[field]) {
-                    console.log(this.formData[field], "cek isi form chat")
-                }else{
-                    alert('chat harus ada isi !')
+         //Start chat create room
+        async startChatCreateRoom(idPengaduan) {
+            try {
+                const response = await axios.post(`${this.baseUrl}/api/create_room_chat`, { pengaduan_id : idPengaduan }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.token}`,
+                    },
+                });
+                
+                this.fetchDataChat();
+                this.LoadingChat = true;
+                return response
+
+            } catch (error) {
+                if(error.response.data.message && error.response.status == 400){
+                this.errorMessages = [];
+                for (let field in error.response.data.message) { //list error 400
+                    this.errorMessages.push(...error.response.data.message[field]);
                 }
-            });
-            const hasErrors = requiredFields.some(field => this.error[field]);
-            if (!hasErrors) {
-                this.sendStoreChat();
+                }
+                console.log(error.response.data.message)
             }
         },
 
@@ -926,7 +983,9 @@ export default {
                 })
 
                 this.itemChat = response.data.data;
+                this.LoadingChat = false;
                 this.loadingHome = true;
+                this.loadingSubmitChat = false;
 
             } catch (error) {
                 if (error.response && error.response.status == 401) {
@@ -942,16 +1001,27 @@ export default {
             }
         },
 
+        submitChat() { //chat submit
+            this.sendStoreChat();
+        },
+
         //store form data chat
         async sendStoreChat() {
+
+            this.loadingSubmitChat = true;
+            this.formDataChat = {
+                message_content: this.formDataChat.message_content,
+                roomID: this.itemChat.roomID
+            };
+
             try {
-                const response = await axios.post(`${this.baseUrl}/api/send_one_message`, this.formData, {
+                const response = await axios.post(`${this.baseUrl}/api/send_one_message`, this.formDataChat, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${this.token}`,
                     },
                 });
-
+                this.fetchDataChat();
                 return response
 
             } catch (error) {
@@ -962,9 +1032,14 @@ export default {
                 }
                 }
                 console.log(error.response.data.message)
-            } finally { 
-                this.loadingSubmitPengaduan = false
             }
+        },
+
+        scrollToBottom() {
+            this.$nextTick(() => {
+                const chatMessages = this.$refs.chatMessages;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
         },
 
         Toasttt(msg, type, detail){
@@ -994,6 +1069,10 @@ export default {
         },
 
     },
+
+    updated() {
+        this.scrollToBottom();
+    },
     
     computed: {
         formattedPhoneNumber() {
@@ -1018,6 +1097,13 @@ export default {
     }
     .fade-out-worker-single {
         animation: fadeOut 0.2s ease-out;
+    }
+
+    .fade-in-chatT {
+        animation: fadeIn 0.5s ease-in;
+    }
+    .fade-out-chatT {
+        animation: fadeOut 0.5s ease-out;
     }
     @keyframes fadeIn {
         from {
