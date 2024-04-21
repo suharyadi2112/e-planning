@@ -12,6 +12,8 @@ module.exports = defineConfig({
       // Define the environment variable
     config.plugin('define').tap((definitions) => {
       definitions[0]['process.env']['BE_APP_BASE_URL'] = JSON.stringify(process.env.BE_APP_BASE_URL);
+      definitions[0]['process.env']['PUSHER_APP_KEY'] = JSON.stringify(process.env.PUSHER_APP_KEY);
+      definitions[0]['process.env']['TES_MBOT'] = JSON.stringify(process.env.TES_MBOT);
       return definitions;
     });
   },

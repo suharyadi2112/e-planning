@@ -455,7 +455,7 @@
                                         <div class="card-footer">
                                             <form @submit.prevent="submitChat">
                                                 <div class="input-group fade-in-chatT">
-                                                    <input type="text" class="form-control" :readonly="itemChat.roomReady === false" :disabled="itemChat.roomReady === false" v-model="formDataChat.message_content" name="message_content" placeholder="Masukan bacotannya" aria-label="Kirim pesan" aria-describedby="button-addon2" >
+                                                    <input type="text" class="form-control" :readonly="itemChat.roomReady === false" :disabled="itemChat.roomReady === false" v-model="formDataChat.message_content" name="message_content" placeholder="Masukan bacotannya" aria-label="Kirim pesan" aria-describedby="button-addon2" autocomplete="off">
 
                                                     <button v-if="itemChat.roomReady == true" class="btn btn-primary" style="float: right;" type="submit" :disabled="loadingSubmitChat">
                                                         <span v-if="!loadingSubmitChat"><i class="bi bi-send"></i> Send</span>
@@ -471,8 +471,7 @@
                                     </div>
                                 </div>
                             </div>
-                           
-
+                    
                         </template>
                     </div>
 
@@ -516,6 +515,8 @@ export default {
                 picture_post:null,
             },
             baseUrl: process.env.BE_APP_BASE_URL,
+            pusherAPPKEY: process.env.PUSHER_APP_KEY,
+            TES_MBOT: process.env.TES_MBOT,
             token: localStorage.getItem('tokenCallIT'),
             infoIDLogin: localStorage.getItem('userInfoId'),
             idPengaduan : null,
@@ -535,28 +536,35 @@ export default {
             },
             LoadingChat: false,
             loadingSubmitChat: false,
+
+            img: "../assets/img/callit.png", //image popup
+
         }
     },
     created() {
 
         // --- pusher --- //
-        const pusher = new Pusher('9ede8272955f9628c5d9', {
+        const pusher = new Pusher(`${this.pusherAPPKEY}`, {
             cluster: 'ap1',
             encrypted: true
         });
-
         Pusher.logToConsole = true; //matikan di prod
-
         const channel = pusher.subscribe('callit-geng');
-
         channel.bind('callit-geng-event', data => {
             if (data.message.roomID == this.itemChat.roomID) {
+                
                 const infoIDLoginInt = parseInt(this.infoIDLogin); //parse ke integer
+
+                if (data.message.sender_id != infoIDLoginInt) { //broadcast notif kecuali yang login saat ini
+                    this.showNotificationPesan(`Pesan masuk dengan kode pengaduan ${this.items.kode_laporan}`)
+                }
+                
                 if (data.message.members.includes(infoIDLoginInt)) {
                     this.fetchDataChat()
                 } else {
                     console.log('You are not authorized to view this message.');
                 }
+
             }else{
                 console.log('You are not join on this room.');
             }
@@ -575,6 +583,16 @@ export default {
         this.fetchBoth();
     },
     methods: {
+        async showNotificationPesan(pesan) {
+            if (Notification.permission === "granted") {
+                new Notification("To do list", { body: pesan, icon: this.img });
+            } else if (Notification.permission !== "denied") {
+                const permission = await Notification.requestPermission();
+                if (permission === "granted") {
+                    new Notification("To do list", { body: this.text, icon: this.img });
+                }
+            }
+        },
         async fetchBoth() {
             try {
                 // Menjalankan kedua metode fetch async secara paralel
@@ -1022,6 +1040,7 @@ export default {
                     },
                 });
                 this.fetchDataChat();
+                this.formDataChat.message_content = '';
                 return response
 
             } catch (error) {
