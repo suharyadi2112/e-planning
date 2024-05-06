@@ -7,9 +7,9 @@
             <h1 class="text-left">More Detail Pengaduan</h1>
                 <nav>
                     <ol class="breadcrumb breadJa">
-                    <router-link :to="{ name: '/'}" class="breadcrumb-item">Home</router-link>
-                    <router-link :to="{ name: 'pengaduandashboard'}" class="breadcrumb-item">Dashboard Pengaduan</router-link>
-                    <router-link :to="{ name: 'detailpagepengaduan'}" class="breadcrumb-item">More Detail Pengaduan</router-link>
+                        <router-link :to="{ name: '/'}" class="breadcrumb-item">Home</router-link>
+                        <router-link :to="{ name: 'pengaduandashboard'}" class="breadcrumb-item">Dashboard Pengaduan</router-link>
+                        <router-link :to="{ name: 'detailpagepengaduan'}" class="breadcrumb-item">More Detail Pengaduan</router-link>
                     </ol>
                 </nav>
             </div>
@@ -669,8 +669,7 @@ export default {
                 if (data.message.sender_id != infoIDLoginInt) { //broadcast notif kecuali yang login saat ini
                     this.showNotificationPesan(`Pesan masuk dengan kode pengaduan ${this.items.kode_laporan}`)
                 }
-                
-                if (data.message.members.includes(infoIDLoginInt)) {
+                if (data.message.members.includes(infoIDLoginInt) || data.message.sender_id == infoIDLoginInt) {
                     this.fetchDataChat()
                 } else {
                     console.log('You are not authorized to view this message.');
