@@ -10,6 +10,11 @@
           <span>Dashboard</span>
         </router-link>
 
+        <router-link to="/pick-pengaduan-by-worker" class="nav-link collapsed" :class="{ active: isActive('/pick-pengaduan-by-worker') }">
+          <i class="bi bi-stopwatch"></i>
+          <span>Auction Pengaduan</span>
+        </router-link>
+
         <router-link to="/pengaduan" class="nav-link collapsed" :class="{ active: isActive('/pengaduan') }">
           <i class="bi bi-megaphone"></i>
           <span>Pengaduan</span>

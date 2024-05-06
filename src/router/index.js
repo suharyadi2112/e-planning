@@ -15,6 +15,7 @@ import PengaduanDashboard from '../views/pengaduan/PengaduanView.vue'
 import DetailPagePengaduan from '../views/pengaduan/PengaduanDetailPageView.vue'
 import AddPengaduan from '../views/pengaduan/AddPengaduanView.vue'
 import EditPengaduan from '../views/pengaduan/EditPengaduanView.vue'
+import PickPengaduanByWorker from '../views/pengaduan/PickPengaduanByWorkerView.vue'
 
 //permission
 import NProgress from 'nprogress';
@@ -35,6 +36,7 @@ const routes = [
   { path: '/detail-page-pengaduan/:id', name: 'detailpagepengaduan', components: { default: DetailPagePengaduan }, meta: { requiresAuth: true } },
   { path: '/add-pengaduan', name: 'addpengaduan', components: { default: AddPengaduan }, meta: { requiresAuth: true } },
   { path: '/edit-pengaduan/:id', name: 'editpengaduan', components: { default: EditPengaduan }, meta: { requiresAuth: true } },
+  { path: '/pick-pengaduan-by-worker', name: 'pickpengaduanbyworker', components: { default: PickPengaduanByWorker }, meta: { requiresAuth: true } },
 ]
 
 
