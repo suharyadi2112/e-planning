@@ -103,7 +103,7 @@
 
                         <td nowrap="" width="10px;" style="text-align: center;">
                             
-                            <button @click="infoDetailPengaduan(item.judul_pengaduan, item.lantai, item.lokasi, item.nomor_handphone, item.dekskripsi_pelaporan, item.tanggal_pelaporan, item.tanggal_selesai)" class="btn btn-dark btn-sm m-1 shadow" :disabled="OpenUpdateKatPengBtn" title="Update">
+                            <button @click="infoDetailPengaduan(item.judul_pengaduan, item.lantai, item.lokasi, item.nomor_handphone, item.dekskripsi_pelaporan, item.tanggal_pelaporan, item.tanggal_selesai)" class="btn btn-dark btn-sm m-1 shadow" title="Update">
                               <i class="bi bi-eye"></i>
                             </button>
 
@@ -159,7 +159,6 @@ export default {
   data() {
     return {
       items: [],
-      itemsAddional: [],
       currentPage: 1,
       totalPages: 0,
       searchQuery: '',
@@ -172,14 +171,9 @@ export default {
       startEntryData : 0,
       endEntryData: 0,
       totalItemsData : 0, 
-
-      OpenUpdateKatPengBtn : false,
-      FetchUpdateData : false,
+      tanggal_pelaporan : 'all',
+      status_pelaporan : '',
       
-      FormDataUpdate : {}, //data for update
-      LoadKatpeng: true,
-
-      DeletePengaduanBtn : false,
       expandedName: [], //judul expand
 
       expandedNameKode: [],//kode expand
@@ -225,7 +219,7 @@ export default {
     async fetchData() {
       try {
         this.loading = true; //loading fetch
-        const response = await axios(`${this.baseUrl}/api/get_pengaduan/`, {
+        const response = await axios(`${this.baseUrl}/api/get_pengaduan_not_assign/`, {
           headers: {
             Authorization: `Bearer ${this.token}`
           },
@@ -233,6 +227,8 @@ export default {
             page: this.currentPage,
             search: this.searchQuery,
             per_page: this.selectedEntries,
+            tanggal_pelaporan : this.tanggal_pelaporan,
+            status_pelaporan : this.status_pelaporan
           },
         });
 
