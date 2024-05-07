@@ -226,6 +226,7 @@
 
 <script>
 import axios from 'axios';
+import moment from 'moment';
 
 export default {
   components:{
@@ -481,7 +482,7 @@ export default {
                     <tr>
                         <th scope="col">Tanggal Pelaporan</th>
                         <th scope="col">:</th>
-                        <td>${tglpelaporan ? tglpelaporan : '-'}</td>
+                        <td>${tglpelaporan ? this.formatDate(tglpelaporan) : '-'}</td>
                     </tr>
                     <tr>
                         <th scope="col">Tanggal Selesai</th>
@@ -601,6 +602,10 @@ export default {
           })
         }
       });
+    },
+
+    formatDate(date) {
+      return date ? moment.utc(date).format('YYYY-MM-DD HH:mm') : '-';
     },
     
     Toasttt(msg, type, detail){
