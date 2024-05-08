@@ -43,8 +43,8 @@
                 </div>
             </div>
                 <div class="table-responsive">
-                  <table class="table table-hover table-bordered shadow-sm caption-top table-sm">
-                    <thead class="table-primary">
+                  <table class="table table-secondary table-hover shadow-sm caption-top table-sm">
+                    <thead class="table-dark">
                       <tr style="vertical-align:middle; text-align: center;">
                         <th scope="col" style="text-align: center;">#</th>
                         <th scope="col">Kode</th>
@@ -105,6 +105,12 @@
                             
                             <button @click="infoDetailPengaduan(item.judul_pengaduan, item.lantai, item.lokasi, item.nomor_handphone, item.dekskripsi_pelaporan, item.tanggal_pelaporan, item.tanggal_selesai)" class="btn btn-dark btn-sm m-1 shadow" title="Update">
                               <i class="bi bi-eye"></i>
+                            </button>
+                            <button @click="ClaimAuction(item.id)" class="btn btn-outline-primary btn-sm m-1 shadow" title="Take this pengaduan" :disabled="loadingTakeIT === true">
+                              <div v-if="loadingTakeIT" class="spinner-border spinner-border-sm" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                              </div>
+                              <i v-else class="bi bi-person-arms-up"></i> Take IT!
                             </button>
 
                         </td>
@@ -167,6 +173,7 @@ export default {
       selectedEntries: 5, // Initial selected value for entries dropdown
       baseUrl: process.env.BE_APP_BASE_URL,
       token: localStorage.getItem('tokenCallIT'),
+      infoIDLogin: localStorage.getItem('userInfoId'),
       loading: false,
 
       startEntryData : 0,
@@ -176,8 +183,9 @@ export default {
       status_pelaporan : '',
       
       expandedName: [], //judul expand
-
       expandedNameKode: [],//kode expand
+
+      loadingTakeIT : false,
     }
   },
   created() { //ambil param
@@ -315,6 +323,49 @@ export default {
         });
      
         this.fetchData();
+    },
+
+    async ClaimAuction(idPengaduan){
+
+        this.$swal({
+            title: "Do you want to take this job ?",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Take IT",
+            denyButtonText: `Don't Take`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const DataUserID = {
+                        user_id: [this.infoIDLogin],
+                    };
+
+                    this.loadingTakeIT = true;
+                    const response = await axios.put(`${this.baseUrl}/api/assign_worker_to_pengaduan/${idPengaduan}`, DataUserID, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${this.token}`,
+                        },
+                    });
+
+                    this.Toasttt('Successfully', 'success', 'Success claim this job');
+                    this.fetchData();
+                    return response;
+                } catch (error) {
+                    if (error.response.data.message && error.response.status == 400) {
+                        for (let field in error.response.data.message) {
+                            this.errorMessages.push(...error.response.data.message[field]);
+                        }
+                    }
+                    console.log(error.response.data.message);
+                    this.$swal("Error", "An error occurred while saving changes", "error");
+                } finally {
+                    this.loadingTakeIT = false;
+                }
+            } else if (result.isDenied) {
+                this.$swal("Oke pikiran lagi :)", "", "info");
+            }
+        });
     },
 
     //detail

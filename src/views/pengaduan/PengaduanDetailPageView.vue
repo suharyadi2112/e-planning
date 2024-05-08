@@ -158,12 +158,12 @@
 
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label">Tanggal Pelaporan</div>
-                            <div class="col-lg-9 col-md-8">{{ items.tanggal_pelaporan ? items.tanggal_pelaporan : '-' }}</div>
+                            <div class="col-lg-9 col-md-8">{{ items.tanggal_pelaporan ? formatDate(items.tanggal_pelaporan) : '-' }}</div>
                         </div>
 
                         <div class="row">
                             <div class="col-lg-3 col-md-4 label">Tanggal Selesai</div>
-                            <div class="col-lg-9 col-md-8">{{ items.tanggal_selesai ? items.tanggal_selesai : '-' }}</div>
+                            <div class="col-lg-9 col-md-8">{{ items.tanggal_selesai ? formatDate(items.tanggal_selesai) : '-' }}</div>
                         </div>
                     </div>
 
@@ -607,6 +607,7 @@ import 'primevue/resources/themes/bootstrap4-light-blue/theme.css';
 import ProgressBar from 'primevue/progressbar';
 import VueMultiselect from 'vue-multiselect';
 import Pusher from 'pusher-js';
+import moment from 'moment';
 
 export default {
     components: {
@@ -1204,6 +1205,9 @@ export default {
             const hours = date.getHours().toString().padStart(2, '0');
             const minutes = date.getMinutes().toString().padStart(2, '0');
             return `${hours}:${minutes}`;
+        },
+        formatDate(date) {
+            return date ? moment.utc(date).format('YYYY-MM-DD HH:mm') : '-';
         },
 
     },
