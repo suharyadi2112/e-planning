@@ -1,8 +1,8 @@
 version: '3.7'
 
 services:
-  etp-fe:
-    container_name: etp-fe
+  call-it-fe:
+    container_name: call-it-fe
     build:
       context: .
       dockerfile: Dockerfile
